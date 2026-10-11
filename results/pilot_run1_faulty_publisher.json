@@ -1,0 +1,8 @@
+{
+  "started_cat": "2026-10-03T09:57:00.287+02:00",
+  "finished_cat": "2026-10-03T09:57:01.703+02:00",
+  "taken_from_generator": 2000,
+  "publish_calls_ok": 2000,
+  "publish_failed": 0,
+  "acknowledged_by_broker": 2000
+}

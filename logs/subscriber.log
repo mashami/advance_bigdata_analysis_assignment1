@@ -1,0 +1,6 @@
+2026-10-03 09:56:57,265 INFO connected rc=Success session_present=False
+2026-10-03 09:56:57,269 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-03 09:58:39,328 INFO connected rc=Success session_present=True
+2026-10-03 09:58:39,329 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-11 08:22:08,729 INFO connected rc=Success session_present=False
+2026-10-11 08:22:08,731 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]

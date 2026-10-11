@@ -1,0 +1,13 @@
+,value
+injected_events,40.0
+detected,40.0
+missed,0.0
+flags_total,474.0
+true_flags,474.0
+false_flags,0.0
+observed_readings,10643735.0
+readings_inside_injected_intervals,474.0
+readings_outside_injected_intervals,10643261.0
+false_flag_pct_of_outside_readings,0.0
+meters_with_false_flags,0.0
+pct_of_meters_affected_by_false_flags,0.0

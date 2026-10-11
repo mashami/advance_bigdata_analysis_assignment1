@@ -1,0 +1,85 @@
+Finalize Aggregate  (cost=10632.32..10632.33 rows=1 width=24) (actual time=23.682..26.169 rows=1 loops=1)
+  Buffers: shared hit=14735
+  ->  Gather  (cost=1122.48..10632.28 rows=4 width=48) (actual time=11.429..26.150 rows=14 loops=1)
+        Workers Planned: 4
+        Workers Launched: 4
+        Buffers: shared hit=14735
+        ->  Parallel Append  (cost=122.48..9631.88 rows=1 width=48) (actual time=10.024..16.768 rows=3 loops=5)
+              Buffers: shared hit=14735
+              ->  Custom Scan (VectorAgg)  (cost=122.48..122.49 rows=1 width=48) (actual time=1.984..1.987 rows=1 loops=1)
+                    Buffers: shared hit=267
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_281_chunk  (cost=13.06..77.59 rows=5984 width=16) (actual time=0.000..0.002 rows=8 loops=1)
+                          Vectorized Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone) AND (meter_id = 1000000000))
+                          Rows Removed by Filter: 7992
+                          ->  Parallel Index Scan using _hyper_4_281_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_281_chunk_compressed  (cost=0.15..17.75 rows=6 width=148) (actual time=0.404..1.011 rows=8 loops=1)
+                                Index Cond: ((_ts_meta_v2_first_event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 24
+                                Buffers: shared hit=142
+              ->  Custom Scan (VectorAgg)  (cost=1254.18..1254.19 rows=1 width=48) (actual time=6.887..6.889 rows=1 loops=2)
+                    Buffers: shared hit=2087
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_288_chunk  (cost=10.97..745.64 rows=67805 width=16) (actual time=0.000..0.001 rows=42 loops=2)
+                          Vectorized Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone) AND (meter_id = 1000000000))
+                          Rows Removed by Filter: 35166
+                          ->  Parallel Seq Scan on _hyper_4_288_chunk_compressed  (cost=0.00..67.59 rows=68 width=148) (actual time=0.362..3.522 rows=36 loops=2)
+                                Filter: ((_ts_meta_v2_first_event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-29 00:00:00+02'::timestamp with time zone) AND _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[]))
+                                Rows Removed by Filter: 139
+                                Buffers: shared hit=1174
+              ->  Custom Scan (VectorAgg)  (cost=1375.86..1375.87 rows=1 width=48) (actual time=12.463..12.464 rows=1 loops=1)
+                    Buffers: shared hit=2072
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_282_chunk  (cost=10.86..814.83 rows=74803 width=16) (actual time=0.000..0.000 rows=93 loops=1)
+                          Vectorized Filter: (meter_id = 1000000000)
+                          Rows Removed by Filter: 85059
+                          ->  Parallel Seq Scan on _hyper_4_282_chunk_compressed  (cost=0.00..66.80 rows=75 width=100) (actual time=0.358..6.698 rows=86 loops=1)
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 295
+                                Buffers: shared hit=1245
+              ->  Custom Scan (VectorAgg)  (cost=1375.86..1375.87 rows=1 width=48) (actual time=11.909..11.910 rows=1 loops=1)
+                    Buffers: shared hit=2108
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_283_chunk  (cost=10.86..814.83 rows=74803 width=16) (actual time=0.000..0.000 rows=94 loops=1)
+                          Vectorized Filter: (meter_id = 1000000000)
+                          Rows Removed by Filter: 89906
+                          ->  Parallel Seq Scan on _hyper_4_283_chunk_compressed  (cost=0.00..66.80 rows=75 width=100) (actual time=0.300..6.071 rows=90 loops=1)
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 291
+                                Buffers: shared hit=1245
+              ->  Custom Scan (VectorAgg)  (cost=1375.86..1375.87 rows=1 width=48) (actual time=5.753..5.754 rows=0 loops=2)
+                    Buffers: shared hit=2063
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_284_chunk  (cost=10.86..814.83 rows=74803 width=16) (actual time=0.000..0.000 rows=95 loops=1)
+                          Vectorized Filter: (meter_id = 1000000000)
+                          Rows Removed by Filter: 88090
+                          ->  Parallel Seq Scan on _hyper_4_284_chunk_compressed  (cost=0.00..66.80 rows=75 width=100) (actual time=0.101..3.008 rows=44 loops=2)
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 146
+                                Buffers: shared hit=1232
+              ->  Custom Scan (VectorAgg)  (cost=1375.86..1375.87 rows=1 width=48) (actual time=2.382..2.383 rows=1 loops=5)
+                    Buffers: shared hit=2129
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_285_chunk  (cost=10.86..814.83 rows=74803 width=16) (actual time=0.000..0.000 rows=19 loops=5)
+                          Vectorized Filter: (meter_id = 1000000000)
+                          Rows Removed by Filter: 17412
+                          ->  Parallel Seq Scan on _hyper_4_285_chunk_compressed  (cost=0.00..66.80 rows=75 width=100) (actual time=0.160..1.284 rows=18 loops=5)
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 59
+                                Buffers: shared hit=1307
+              ->  Custom Scan (VectorAgg)  (cost=1375.86..1375.87 rows=1 width=48) (actual time=4.824..4.825 rows=1 loops=2)
+                    Buffers: shared hit=2013
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_286_chunk  (cost=10.86..814.83 rows=74803 width=16) (actual time=0.000..0.001 rows=46 loops=2)
+                          Vectorized Filter: (meter_id = 1000000000)
+                          Rows Removed by Filter: 42454
+                          ->  Parallel Seq Scan on _hyper_4_286_chunk_compressed  (cost=0.00..66.80 rows=75 width=100) (actual time=0.136..2.498 rows=42 loops=2)
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 148
+                                Buffers: shared hit=1232
+              ->  Custom Scan (VectorAgg)  (cost=1375.86..1375.87 rows=1 width=48) (actual time=10.572..10.574 rows=1 loops=1)
+                    Buffers: shared hit=1996
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_287_chunk  (cost=10.86..814.83 rows=74803 width=16) (actual time=0.000..0.001 rows=96 loops=1)
+                          Vectorized Filter: (meter_id = 1000000000)
+                          Rows Removed by Filter: 85904
+                          ->  Parallel Seq Scan on _hyper_4_287_chunk_compressed  (cost=0.00..66.80 rows=75 width=100) (actual time=0.100..5.245 rows=86 loops=1)
+                                Filter: _timescaledb_functions.bloom1_contains_any_hashes(_ts_meta_v2_bloomg_meter_id, '{-5521859524179266714}'::bigint[])
+                                Rows Removed by Filter: 295
+                                Buffers: shared hit=1207
+Planning:
+  Buffers: shared hit=85
+Planning Time: 0.900 ms
+Execution Time: 26.393 ms

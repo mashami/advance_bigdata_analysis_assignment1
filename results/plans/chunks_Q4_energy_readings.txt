@@ -1,0 +1,72 @@
+Finalize Aggregate  (cost=747.63..747.64 rows=1 width=24) (actual time=3.165..3.169 rows=1 loops=1)
+  Buffers: shared hit=658 read=25
+  ->  Append  (cost=10.56..747.56 rows=8 width=48) (actual time=0.129..3.164 rows=8 loops=1)
+        Buffers: shared hit=658 read=25
+        ->  Partial Aggregate  (cost=10.56..10.57 rows=1 width=48) (actual time=0.128..0.129 rows=1 loops=1)
+              Buffers: shared hit=7 read=4
+              ->  Index Scan using _hyper_1_22_chunk_energy_readings_meter_time_idx on _hyper_1_22_chunk  (cost=0.42..10.50 rows=8 width=16) (actual time=0.072..0.124 rows=8 loops=1)
+                    Index Cond: ((meter_id = 1000000000) AND (event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                    Buffers: shared hit=7 read=4
+        ->  Partial Aggregate  (cost=106.18..106.19 rows=1 width=48) (actual time=0.662..0.663 rows=1 loops=1)
+              Buffers: shared hit=93 read=3
+              ->  Bitmap Heap Scan on _hyper_1_23_chunk  (cost=2.26..105.46 rows=95 width=16) (actual time=0.089..0.630 rows=93 loops=1)
+                    Recheck Cond: (meter_id = 1000000000)
+                    Heap Blocks: exact=93
+                    Buffers: shared hit=93 read=3
+                    ->  Bitmap Index Scan on _hyper_1_23_chunk_energy_readings_meter_time_idx  (cost=0.00..2.24 rows=95 width=0) (actual time=0.068..0.069 rows=93 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared read=3
+        ->  Partial Aggregate  (cost=106.18..106.19 rows=1 width=48) (actual time=0.285..0.286 rows=1 loops=1)
+              Buffers: shared hit=94 read=3
+              ->  Bitmap Heap Scan on _hyper_1_24_chunk  (cost=2.26..105.46 rows=95 width=16) (actual time=0.092..0.276 rows=94 loops=1)
+                    Recheck Cond: (meter_id = 1000000000)
+                    Heap Blocks: exact=94
+                    Buffers: shared hit=94 read=3
+                    ->  Bitmap Index Scan on _hyper_1_24_chunk_energy_readings_meter_time_idx  (cost=0.00..2.24 rows=95 width=0) (actual time=0.080..0.081 rows=94 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared read=3
+        ->  Partial Aggregate  (cost=106.18..106.19 rows=1 width=48) (actual time=0.533..0.533 rows=1 loops=1)
+              Buffers: shared hit=95 read=3
+              ->  Bitmap Heap Scan on _hyper_1_25_chunk  (cost=2.26..105.46 rows=95 width=16) (actual time=0.066..0.504 rows=95 loops=1)
+                    Recheck Cond: (meter_id = 1000000000)
+                    Heap Blocks: exact=95
+                    Buffers: shared hit=95 read=3
+                    ->  Bitmap Index Scan on _hyper_1_25_chunk_energy_readings_meter_time_idx  (cost=0.00..2.24 rows=95 width=0) (actual time=0.051..0.051 rows=95 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared read=3
+        ->  Partial Aggregate  (cost=106.18..106.19 rows=1 width=48) (actual time=0.534..0.535 rows=1 loops=1)
+              Buffers: shared hit=95 read=3
+              ->  Bitmap Heap Scan on _hyper_1_26_chunk  (cost=2.26..105.46 rows=95 width=16) (actual time=0.069..0.502 rows=95 loops=1)
+                    Recheck Cond: (meter_id = 1000000000)
+                    Heap Blocks: exact=95
+                    Buffers: shared hit=95 read=3
+                    ->  Bitmap Index Scan on _hyper_1_26_chunk_energy_readings_meter_time_idx  (cost=0.00..2.24 rows=95 width=0) (actual time=0.055..0.055 rows=95 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared read=3
+        ->  Partial Aggregate  (cost=106.18..106.19 rows=1 width=48) (actual time=0.274..0.274 rows=1 loops=1)
+              Buffers: shared hit=93 read=3
+              ->  Bitmap Heap Scan on _hyper_1_27_chunk  (cost=2.26..105.46 rows=95 width=16) (actual time=0.077..0.265 rows=93 loops=1)
+                    Recheck Cond: (meter_id = 1000000000)
+                    Heap Blocks: exact=93
+                    Buffers: shared hit=93 read=3
+                    ->  Bitmap Index Scan on _hyper_1_27_chunk_energy_readings_meter_time_idx  (cost=0.00..2.24 rows=95 width=0) (actual time=0.062..0.062 rows=93 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared read=3
+        ->  Partial Aggregate  (cost=106.18..106.19 rows=1 width=48) (actual time=0.279..0.279 rows=1 loops=1)
+              Buffers: shared hit=96 read=3
+              ->  Bitmap Heap Scan on _hyper_1_28_chunk  (cost=2.26..105.46 rows=95 width=16) (actual time=0.065..0.267 rows=96 loops=1)
+                    Recheck Cond: (meter_id = 1000000000)
+                    Heap Blocks: exact=96
+                    Buffers: shared hit=96 read=3
+                    ->  Bitmap Index Scan on _hyper_1_28_chunk_energy_readings_meter_time_idx  (cost=0.00..2.24 rows=95 width=0) (actual time=0.053..0.053 rows=96 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared read=3
+        ->  Partial Aggregate  (cost=99.83..99.84 rows=1 width=48) (actual time=0.461..0.461 rows=1 loops=1)
+              Buffers: shared hit=85 read=3
+              ->  Index Scan using _hyper_1_29_chunk_energy_readings_meter_time_idx on _hyper_1_29_chunk  (cost=0.42..99.17 rows=87 width=16) (actual time=0.066..0.438 rows=85 loops=1)
+                    Index Cond: ((meter_id = 1000000000) AND (event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                    Buffers: shared hit=85 read=3
+Planning:
+  Buffers: shared hit=53
+Planning Time: 0.432 ms
+Execution Time: 3.333 ms

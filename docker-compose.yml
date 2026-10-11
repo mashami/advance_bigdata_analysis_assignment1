@@ -1,0 +1,32 @@
+# EMQX broker + PostgreSQL/TimescaleDB for Assignment I.
+# Start:  docker compose up -d        Stop: docker compose stop
+# PostgreSQL is published on host port 5433 so it does not clash with a
+# Homebrew PostgreSQL that may already listen on 5432.
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg17
+    container_name: tsdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${PGPASSWORD:-change_me}
+      TZ: Africa/Kigali
+      PGTZ: Africa/Kigali
+    ports:
+      - "5433:5432"
+    volumes:
+      - tsdb_data:/var/lib/postgresql/data
+    shm_size: 1g
+    restart: unless-stopped
+
+  emqx:
+    image: emqx/emqx:latest
+    container_name: emqx
+    environment:
+      TZ: Africa/Kigali
+    ports:
+      - "1883:1883"     # MQTT
+      - "18083:18083"   # dashboard (default login admin / public, change on first login)
+    restart: unless-stopped
+
+volumes:
+  tsdb_data:

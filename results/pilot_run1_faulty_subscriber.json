@@ -1,0 +1,9 @@
+{
+  "received": 1208,
+  "redelivered_dup_flag": 0,
+  "parse_errors": 0,
+  "insert_errors": 0,
+  "inserted_committed": 1208,
+  "energy_live_rows": 1208,
+  "finished_cat": "2026-10-03T09:57:07.610+02:00"
+}

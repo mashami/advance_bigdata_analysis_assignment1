@@ -1,0 +1,32 @@
+Finalize Aggregate  (cost=187849.16..187849.17 rows=1 width=40) (actual time=825.351..834.024 rows=1 loops=1)
+  Buffers: shared hit=231 read=120723
+  ->  Gather  (cost=35804.50..187848.90 rows=20 width=64) (actual time=251.401..833.939 rows=12 loops=1)
+        Workers Planned: 4
+        Workers Launched: 4
+        Buffers: shared hit=231 read=120723
+        ->  Parallel Append  (cost=34804.50..186846.90 rows=5 width=64) (actual time=607.250..819.277 rows=2 loops=5)
+              Buffers: shared hit=231 read=120723
+              ->  Partial Aggregate  (cost=45208.35..45208.36 rows=1 width=64) (actual time=570.221..570.222 rows=1 loops=2)
+                    Buffers: shared hit=193 read=30047
+                    ->  Parallel Seq Scan on _hyper_3_258_chunk  (cost=0.00..36892.60 rows=665260 width=16) (actual time=0.059..404.284 rows=1330520 loops=2)
+                          Buffers: shared hit=193 read=30047
+              ->  Partial Aggregate  (cost=45206.85..45206.86 rows=1 width=64) (actual time=211.077..211.080 rows=1 loops=5)
+                    Buffers: shared read=30239
+                    ->  Parallel Seq Scan on _hyper_3_257_chunk  (cost=0.00..36891.38 rows=665238 width=16) (actual time=0.097..136.560 rows=532190 loops=5)
+                          Buffers: shared read=30239
+              ->  Partial Aggregate  (cost=45204.13..45204.14 rows=1 width=64) (actual time=497.171..497.174 rows=1 loops=2)
+                    Buffers: shared read=30237
+                    ->  Parallel Seq Scan on _hyper_3_256_chunk  (cost=0.00..36889.06 rows=665206 width=16) (actual time=0.072..328.006 rows=1330412 loops=2)
+                          Buffers: shared read=30237
+              ->  Partial Aggregate  (cost=34804.50..34804.51 rows=1 width=64) (actual time=327.478..327.481 rows=1 loops=2)
+                    Buffers: shared hit=38 read=21201
+                    ->  Parallel Seq Scan on _hyper_3_259_chunk  (cost=0.00..27268.11 rows=602911 width=16) (actual time=0.026..225.374 rows=934512 loops=2)
+                          Buffers: shared hit=38 read=21201
+              ->  Partial Aggregate  (cost=16422.99..16423.00 rows=1 width=64) (actual time=251.021..251.024 rows=1 loops=1)
+                    Buffers: shared read=8999
+                    ->  Parallel Seq Scan on _hyper_3_255_chunk  (cost=0.00..12298.55 rows=329955 width=16) (actual time=0.020..161.948 rows=791893 loops=1)
+                          Buffers: shared read=8999
+Planning:
+  Buffers: shared hit=33
+Planning Time: 0.352 ms
+Execution Time: 834.213 ms

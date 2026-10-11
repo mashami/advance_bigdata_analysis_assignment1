@@ -1,0 +1,34 @@
+Sort  (cost=4517.85..4518.35 rows=200 width=16) (actual time=27.382..27.429 rows=24 loops=1)
+  Sort Key: (time_bucket('01:00:00'::interval, energy_time_compressed.event_time))
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2613
+  ->  Finalize HashAggregate  (cost=4507.20..4510.20 rows=200 width=16) (actual time=27.360..27.411 rows=24 loops=1)
+        Group Key: (time_bucket('01:00:00'::interval, energy_time_compressed.event_time))
+        Batches: 1  Memory Usage: 40kB
+        Buffers: shared hit=2613
+        ->  Gather  (cost=1301.96..4504.36 rows=568 width=40) (actual time=27.337..27.391 rows=24 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=2613
+              ->  Parallel Append  (cost=301.96..3447.56 rows=284 width=40) (actual time=10.121..10.124 rows=8 loops=3)
+                    Buffers: shared hit=2613
+                    ->  Custom Scan (VectorAgg)  (cost=301.96..304.46 rows=200 width=40) (actual time=1.689..1.690 rows=1 loops=2)
+                          Buffers: shared hit=271
+                          ->  Custom Scan (ColumnarScan) on _hyper_4_280_chunk  (cost=11.05..207.21 rows=18950 width=16) (actual time=0.000..0.000 rows=31668 loops=1)
+                                Vectorized Filter: ((event_time >= '2026-09-21 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-22 00:00:00+02'::timestamp with time zone))
+                                Rows Removed by Filter: 332
+                                ->  Parallel Index Scan Backward using _hyper_4_280_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_280_chunk_compressed  (cost=0.15..17.70 rows=19 width=84) (actual time=0.051..0.075 rows=16 loops=2)
+                                      Index Cond: ((_ts_meta_v2_first_event_time >= '2026-09-21 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-22 00:00:00+02'::timestamp with time zone))
+                                      Buffers: shared hit=15
+                    ->  Custom Scan (VectorAgg)  (cost=3139.19..3141.69 rows=200 width=40) (actual time=13.489..13.491 rows=11 loops=2)
+                          Buffers: shared hit=2342
+                          ->  Custom Scan (ColumnarScan) on _hyper_4_281_chunk  (cost=10.47..2116.88 rows=204462 width=16) (actual time=0.000..0.000 rows=348368 loops=1)
+                                Vectorized Filter: ((event_time >= '2026-09-21 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-22 00:00:00+02'::timestamp with time zone))
+                                Rows Removed by Filter: 685
+                                ->  Parallel Index Scan Backward using _hyper_4_281_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_281_chunk_compressed  (cost=0.15..72.26 rows=205 width=84) (actual time=0.018..0.196 rows=175 loops=2)
+                                      Index Cond: ((_ts_meta_v2_first_event_time >= '2026-09-21 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-22 00:00:00+02'::timestamp with time zone))
+                                      Buffers: shared hit=115
+Planning:
+  Buffers: shared hit=26
+Planning Time: 0.980 ms
+Execution Time: 27.565 ms

@@ -1,0 +1,16 @@
+tag,query,table,median_ms,min_ms,max_ms
+chunks,Q1,energy_readings_3h,27.526,26.76,31.04
+chunks,Q1,energy_readings,31.098,29.488,32.156
+chunks,Q1,energy_readings_week,35.254,33.804,47.057
+chunks,Q2,energy_readings_3h,122.713,110.716,140.189
+chunks,Q2,energy_readings,113.126,111.341,271.298
+chunks,Q2,energy_readings_week,152.332,149.26,158.18
+chunks,Q3,energy_readings_3h,2694.953,2255.47,2834.171
+chunks,Q3,energy_readings,856.069,665.49,2109.999
+chunks,Q3,energy_readings_week,670.47,559.661,779.297
+chunks,Q4,energy_readings_3h,4.252,3.279,5.322
+chunks,Q4,energy_readings,1.492,1.277,1.738
+chunks,Q4,energy_readings_week,1.166,0.927,1.588
+chunks,Q5,energy_readings_3h,464.75,373.287,842.744
+chunks,Q5,energy_readings,367.266,354.074,440.028
+chunks,Q5,energy_readings_week,371.294,342.486,417.771

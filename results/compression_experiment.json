@@ -1,0 +1,10 @@
+{
+  "experiment_start_cat": "2026-10-11T08:31:42.869+02:00",
+  "cutoff_cat": "2026-10-09T08:31:42.869+02:00",
+  "chunk_interval": "1 day",
+  "baseline_table": "energy_readings",
+  "policy_jobs": {
+    "energy_time_compressed": 1000,
+    "energy_meter_compressed": 1001
+  }
+}

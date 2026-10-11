@@ -1,0 +1,4 @@
+view,rows_before,rows_after,refresh_start_cat,refresh_seconds,data_mb,index_mb,total_mb
+cagg_energy_15m_region,0,26880,2026-10-11T08:35:52.184+02:00,15.837,2.11,2.04,4.15
+cagg_energy_hour_region,0,6720,2026-10-11T08:36:08.046+02:00,22.263,0.64,0.59,1.23
+cagg_energy_day_meter,0,112000,2026-10-11T08:36:30.327+02:00,16.526,7.41,5.15,12.55

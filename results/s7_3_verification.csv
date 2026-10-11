@@ -1,0 +1,6 @@
+panel,rows_raw,rows_aggregate,keys_identical,reading_counts_identical,compared_value,max_abs_diff,limit,result
+hourly_regional,1680,1680,True,True,energy_kwh,4.206412995699793e-12,0.001,PASS
+daily_network,7,7,True,True,energy_kwh,5.0640664994716644e-09,0.001,PASS
+weekly_network,1,1,True,True,energy_kwh,1.0477378964424133e-08,0.001,PASS
+meter_daily,7,7,True,True,energy_kwh,0.0,0.001,PASS
+completeness,10,10,True,True,completeness_pct,0.0,1e-06,PASS

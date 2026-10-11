@@ -1,0 +1,200 @@
+Sort  (cost=219895.69..219905.69 rows=3999 width=16) (actual time=756.354..758.552 rows=4000 loops=1)
+  Sort Key: energy_readings.meter_id
+  Sort Method: quicksort  Memory: 222kB
+  Buffers: shared hit=121569
+  ->  Finalize HashAggregate  (cost=219616.45..219656.44 rows=3999 width=16) (actual time=754.742..757.182 rows=4000 loops=1)
+        Group Key: energy_readings.meter_id
+        Batches: 1  Memory Usage: 465kB
+        Buffers: shared hit=121569
+        ->  Gather  (cost=7718.94..218238.45 rows=275600 width=16) (actual time=11.131..733.202 rows=140000 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=121569
+              ->  Parallel Append  (cost=6718.94..189678.45 rows=68900 width=16) (actual time=83.450..622.816 rows=28000 loops=5)
+                    Buffers: shared hit=121569
+                    ->  Partial HashAggregate  (cost=6719.33..6759.31 rows=3998 width=16) (actual time=102.520..102.976 rows=4000 loops=1)
+                          Group Key: _hyper_1_21_chunk.meter_id
+                          Buffers: shared hit=4343
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_21_chunk  (cost=0.00..5927.22 rows=158422 width=16) (actual time=0.020..46.091 rows=380212 loops=1)
+                                Buffers: shared hit=4343
+                    ->  Partial HashAggregate  (cost=6719.32..6759.31 rows=3999 width=16) (actual time=97.888..98.564 rows=4000 loops=1)
+                          Group Key: _hyper_1_20_chunk.meter_id
+                          Buffers: shared hit=4343
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_20_chunk  (cost=0.00..5927.21 rows=158421 width=16) (actual time=0.016..44.278 rows=380211 loops=1)
+                                Buffers: shared hit=4343
+                    ->  Partial HashAggregate  (cost=6719.27..6759.28 rows=4001 width=16) (actual time=101.784..102.256 rows=4000 loops=1)
+                          Group Key: _hyper_1_14_chunk.meter_id
+                          Buffers: shared hit=4343
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_14_chunk  (cost=0.00..5927.18 rows=158418 width=16) (actual time=0.016..45.056 rows=380203 loops=1)
+                                Buffers: shared hit=4343
+                    ->  Partial HashAggregate  (cost=6718.94..6758.96 rows=4002 width=16) (actual time=104.729..105.168 rows=4000 loops=1)
+                          Group Key: _hyper_1_13_chunk.meter_id
+                          Buffers: shared hit=4343
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_13_chunk  (cost=0.00..5926.96 rows=158396 width=16) (actual time=0.015..48.014 rows=380151 loops=1)
+                                Buffers: shared hit=4343
+                    ->  Partial HashAggregate  (cost=6718.27..6758.26 rows=3999 width=16) (actual time=110.095..110.518 rows=4000 loops=1)
+                          Group Key: _hyper_1_18_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_18_chunk  (cost=0.00..5926.18 rows=158418 width=16) (actual time=0.017..50.164 rows=380204 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6718.15..6758.16 rows=4001 width=16) (actual time=106.970..107.444 rows=4000 loops=1)
+                          Group Key: _hyper_1_25_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_25_chunk  (cost=0.00..5926.10 rows=158410 width=16) (actual time=0.014..46.684 rows=380185 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.98..6758.00 rows=4002 width=16) (actual time=106.999..107.612 rows=4000 loops=1)
+                          Group Key: _hyper_1_26_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_26_chunk  (cost=0.00..5925.99 rows=158399 width=16) (actual time=0.011..46.393 rows=380157 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.97..6757.97 rows=4000 width=16) (actual time=122.292..122.755 rows=4000 loops=1)
+                          Group Key: _hyper_1_17_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_17_chunk  (cost=0.00..5925.98 rows=158398 width=16) (actual time=0.032..52.205 rows=380156 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.95..6757.96 rows=4001 width=16) (actual time=105.407..105.915 rows=4000 loops=1)
+                          Group Key: _hyper_1_23_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_23_chunk  (cost=0.00..5925.97 rows=158397 width=16) (actual time=0.012..45.144 rows=380152 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.94..6757.95 rows=4001 width=16) (actual time=107.836..108.459 rows=4000 loops=1)
+                          Group Key: _hyper_1_4_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_4_chunk  (cost=0.00..5925.96 rows=158396 width=16) (actual time=0.010..48.711 rows=380151 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.90..6757.89 rows=3999 width=16) (actual time=108.549..108.944 rows=4000 loops=1)
+                          Group Key: _hyper_1_7_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_7_chunk  (cost=0.00..5925.93 rows=158393 width=16) (actual time=0.026..47.666 rows=380144 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.79..6757.79 rows=4000 width=16) (actual time=116.311..116.802 rows=4000 loops=1)
+                          Group Key: _hyper_1_6_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_6_chunk  (cost=0.00..5925.86 rows=158386 width=16) (actual time=0.009..52.712 rows=380126 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.77..6757.76 rows=3999 width=16) (actual time=114.974..115.433 rows=4000 loops=1)
+                          Group Key: _hyper_1_11_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_11_chunk  (cost=0.00..5925.85 rows=158385 width=16) (actual time=0.017..52.365 rows=380123 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.77..6757.78 rows=4001 width=16) (actual time=119.724..120.270 rows=4000 loops=1)
+                          Group Key: _hyper_1_12_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_12_chunk  (cost=0.00..5925.85 rows=158385 width=16) (actual time=0.012..57.470 rows=380123 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.74..6757.70 rows=3996 width=16) (actual time=112.269..112.700 rows=4000 loops=1)
+                          Group Key: _hyper_1_27_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_27_chunk  (cost=0.00..5925.83 rows=158383 width=16) (actual time=0.025..48.004 rows=380119 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.70..6757.71 rows=4001 width=16) (actual time=122.633..123.094 rows=4000 loops=1)
+                          Group Key: _hyper_1_8_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_8_chunk  (cost=0.00..5925.80 rows=158380 width=16) (actual time=0.010..57.463 rows=380113 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.62..6757.61 rows=3999 width=16) (actual time=123.395..123.865 rows=4000 loops=1)
+                          Group Key: _hyper_1_16_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_16_chunk  (cost=0.00..5925.75 rows=158375 width=16) (actual time=0.012..58.668 rows=380100 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6717.55..6757.54 rows=3999 width=16) (actual time=123.265..123.792 rows=4000 loops=1)
+                          Group Key: _hyper_1_2_chunk.meter_id
+                          Buffers: shared hit=4342
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_2_chunk  (cost=0.00..5925.70 rows=158370 width=16) (actual time=0.007..56.111 rows=380089 loops=1)
+                                Buffers: shared hit=4342
+                    ->  Partial HashAggregate  (cost=6716.93..6756.91 rows=3998 width=16) (actual time=120.467..120.897 rows=4000 loops=1)
+                          Group Key: _hyper_1_10_chunk.meter_id
+                          Buffers: shared hit=4341
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_10_chunk  (cost=0.00..5924.95 rows=158395 width=16) (actual time=0.021..54.566 rows=380149 loops=1)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6716.92..6756.93 rows=4001 width=16) (actual time=48.550..48.967 rows=4000 loops=2)
+                          Group Key: _hyper_1_28_chunk.meter_id
+                          Buffers: shared hit=4341
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_28_chunk  (cost=0.00..5924.95 rows=158395 width=16) (actual time=0.017..21.703 rows=190074 loops=2)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6716.76..6756.77 rows=4001 width=16) (actual time=21.511..22.021 rows=4000 loops=5)
+                          Group Key: _hyper_1_9_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4341
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_9_chunk  (cost=0.00..5924.84 rows=158384 width=16) (actual time=0.011..9.684 rows=76024 loops=5)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6716.76..6756.76 rows=4000 width=16) (actual time=32.127..32.486 rows=2667 loops=3)
+                          Group Key: _hyper_1_24_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4341
+                          Worker 0:  Batches: 1  Memory Usage: 217kB
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_1_24_chunk  (cost=0.00..5924.84 rows=158384 width=16) (actual time=0.003..13.703 rows=126707 loops=3)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6716.55..6756.57 rows=4002 width=16) (actual time=61.869..62.102 rows=2000 loops=2)
+                          Group Key: _hyper_1_19_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4341
+                          Worker 3:  Batches: 1  Memory Usage: 217kB
+                          ->  Parallel Seq Scan on _hyper_1_19_chunk  (cost=0.00..5924.70 rows=158370 width=16) (actual time=0.005..27.861 rows=190044 loops=2)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6716.55..6756.53 rows=3998 width=16) (actual time=116.244..116.792 rows=4000 loops=1)
+                          Group Key: _hyper_1_3_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4341
+                          ->  Parallel Seq Scan on _hyper_1_3_chunk  (cost=0.00..5924.70 rows=158370 width=16) (actual time=0.008..50.605 rows=380087 loops=1)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6716.12..6756.12 rows=4000 width=16) (actual time=109.168..109.770 rows=4000 loops=1)
+                          Group Key: _hyper_1_5_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4341
+                          ->  Parallel Seq Scan on _hyper_1_5_chunk  (cost=0.00..5924.41 rows=158341 width=16) (actual time=0.004..47.623 rows=380019 loops=1)
+                                Buffers: shared hit=4341
+                    ->  Partial HashAggregate  (cost=6715.60..6755.60 rows=4000 width=16) (actual time=112.354..112.889 rows=4000 loops=1)
+                          Group Key: _hyper_1_15_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4340
+                          ->  Parallel Seq Scan on _hyper_1_15_chunk  (cost=0.00..5923.73 rows=158373 width=16) (actual time=0.006..50.122 rows=380096 loops=1)
+                                Buffers: shared hit=4340
+                    ->  Partial HashAggregate  (cost=6715.33..6755.35 rows=4002 width=16) (actual time=89.677..90.212 rows=4000 loops=1)
+                          Group Key: _hyper_1_22_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=4340
+                          ->  Parallel Seq Scan on _hyper_1_22_chunk  (cost=0.00..5923.55 rows=158355 width=16) (actual time=0.005..37.450 rows=380053 loops=1)
+                                Buffers: shared hit=4340
+                    ->  Partial HashAggregate  (cost=6156.61..6196.60 rows=3999 width=16) (actual time=95.090..95.606 rows=4000 loops=1)
+                          Group Key: _hyper_1_29_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=3979
+                          ->  Parallel Seq Scan on _hyper_1_29_chunk  (cost=0.00..5430.74 rows=145174 width=16) (actual time=0.005..39.667 rows=348417 loops=1)
+                                Buffers: shared hit=3979
+                    ->  Partial HashAggregate  (cost=642.86..682.86 rows=4000 width=16) (actual time=10.314..11.092 rows=4000 loops=1)
+                          Group Key: _hyper_1_1_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=363
+                          ->  Parallel Seq Scan on _hyper_1_1_chunk  (cost=0.00..549.57 rows=18657 width=16) (actual time=0.012..4.807 rows=31717 loops=1)
+                                Buffers: shared hit=363
+Planning:
+  Buffers: shared hit=177
+Planning Time: 0.767 ms
+Execution Time: 762.061 ms

@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {"name": "raw-dashboard", "runtimeExecutable": ".venv/bin/python", "runtimeArgs": ["dashboard/app.py", "--mode", "raw"], "port": 8050},
+    {"name": "aggregate-dashboard", "runtimeExecutable": ".venv/bin/python", "runtimeArgs": ["dashboard/app.py", "--mode", "aggregate"], "port": 8051}
+  ]
+}

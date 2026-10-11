@@ -1,0 +1,28 @@
+Finalize GroupAggregate  (cost=14186.25..14880.70 rows=2688 width=16) (actual time=70.913..73.026 rows=24 loops=1)
+  Group Key: (time_bucket('01:00:00'::interval, _hyper_3_258_chunk.event_time))
+  Buffers: shared hit=7578 read=327
+  ->  Gather Merge  (cost=14186.25..14813.50 rows=5376 width=40) (actual time=70.904..73.006 rows=72 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=7578 read=327
+        ->  Sort  (cost=13186.23..13192.95 rows=2688 width=40) (actual time=65.905..65.907 rows=24 loops=3)
+              Sort Key: (time_bucket('01:00:00'::interval, _hyper_3_258_chunk.event_time))
+              Sort Method: quicksort  Memory: 26kB
+              Buffers: shared hit=7578 read=327
+              Worker 0:  Sort Method: quicksort  Memory: 26kB
+              Worker 1:  Sort Method: quicksort  Memory: 26kB
+              ->  Partial HashAggregate  (cost=12999.52..13033.12 rows=2688 width=40) (actual time=65.836..65.855 rows=24 loops=3)
+                    Group Key: time_bucket('01:00:00'::interval, _hyper_3_258_chunk.event_time)
+                    Batches: 1  Memory Usage: 121kB
+                    Buffers: shared hit=7562 read=327
+                    Worker 0:  Batches: 1  Memory Usage: 121kB
+                    Worker 1:  Batches: 1  Memory Usage: 121kB
+                    ->  Result  (cost=0.43..12197.59 rows=160386 width=16) (actual time=0.747..49.519 rows=126679 loops=3)
+                          Buffers: shared hit=7562 read=327
+                          ->  Parallel Index Scan Backward using _hyper_3_258_chunk_energy_readings_week_time_idx on _hyper_3_258_chunk  (cost=0.43..10192.76 rows=160386 width=16) (actual time=0.737..36.387 rows=126679 loops=3)
+                                Index Cond: ((event_time >= '2026-09-21 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-22 00:00:00+02'::timestamp with time zone))
+                                Buffers: shared hit=7562 read=327
+Planning:
+  Buffers: shared hit=10 read=1
+Planning Time: 0.597 ms
+Execution Time: 73.159 ms

@@ -1,0 +1,15 @@
+{
+  "route": "generator -> CSV file -> COPY FROM STDIN (single transaction)",
+  "generation_started_cat": "2026-10-11T08:22:18.555+02:00",
+  "generation_finished_cat": "2026-10-11T08:23:29.976+02:00",
+  "dictionaries_consumed": 10696848,
+  "generation_seconds": 71.42,
+  "csv_data_rows": 10696848,
+  "csv_bytes": 1161917346,
+  "load_first_write_cat": "2026-10-11T08:23:31.523+02:00",
+  "load_committed_cat": "2026-10-11T08:25:10.475+02:00",
+  "load_seconds": 98.951,
+  "committed_rows": 10696848,
+  "total_elapsed_seconds": 171.918,
+  "expected_emitted_readings": 10696848
+}

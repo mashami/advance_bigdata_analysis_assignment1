@@ -1,0 +1,18 @@
+Finalize Aggregate  (cost=744.50..744.51 rows=1 width=24) (actual time=1.660..1.661 rows=1 loops=1)
+  Buffers: shared hit=659 read=7
+  ->  Append  (cost=223.01..744.48 rows=2 width=48) (actual time=0.464..1.658 rows=2 loops=1)
+        Buffers: shared hit=659 read=7
+        ->  Partial Aggregate  (cost=223.01..223.02 rows=1 width=48) (actual time=0.464..0.464 rows=1 loops=1)
+              Buffers: shared hit=195 read=3
+              ->  Index Scan using _hyper_3_258_chunk_energy_readings_week_meter_time_idx on _hyper_3_258_chunk  (cost=0.43..221.54 rows=196 width=16) (actual time=0.091..0.430 rows=195 loops=1)
+                    Index Cond: ((meter_id = 1000000000) AND (event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                    Buffers: shared hit=195 read=3
+        ->  Partial Aggregate  (cost=521.45..521.46 rows=1 width=48) (actual time=1.193..1.193 rows=1 loops=1)
+              Buffers: shared hit=464 read=4
+              ->  Index Scan using _hyper_3_259_chunk_energy_readings_week_meter_time_idx on _hyper_3_259_chunk  (cost=0.43..517.97 rows=464 width=16) (actual time=0.070..1.131 rows=464 loops=1)
+                    Index Cond: ((meter_id = 1000000000) AND (event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                    Buffers: shared hit=464 read=4
+Planning:
+  Buffers: shared hit=20 read=9
+Planning Time: 0.539 ms
+Execution Time: 1.695 ms

@@ -1,0 +1,4 @@
+table,data_mb,index_mb,total_mb,compression_ratio,percent_saved,compression_seconds,compressed_chunks,rows_in_compressed_chunks_pct
+energy_readings,950.88,465.87,1416.74,1.0,0.0,,0/29,0.0
+energy_time_compressed,437.8,0.92,438.73,3.23,69.03,9.511,29/29,100.0
+energy_meter_compressed,496.2,5.45,501.65,2.82,64.59,25.159,29/29,100.0

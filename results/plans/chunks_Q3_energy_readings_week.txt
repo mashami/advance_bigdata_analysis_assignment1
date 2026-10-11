@@ -1,0 +1,55 @@
+Sort  (cost=173797.03..173807.03 rows=3998 width=16) (actual time=1280.308..1281.792 rows=4000 loops=1)
+  Sort Key: energy_readings_week.meter_id
+  Sort Method: quicksort  Memory: 222kB
+  Buffers: shared hit=36348 read=84606
+  ->  Finalize HashAggregate  (cost=173517.87..173557.85 rows=3998 width=16) (actual time=1273.366..1275.387 rows=4000 loops=1)
+        Group Key: energy_readings_week.meter_id
+        Batches: 1  Memory Usage: 465kB
+        Buffers: shared hit=36348 read=84606
+        ->  Gather  (cost=31282.67..173167.97 rows=69980 width=16) (actual time=474.279..1262.336 rows=48000 loops=1)
+              Workers Planned: 4
+              Workers Launched: 4
+              Buffers: shared hit=36348 read=84606
+              ->  Parallel Append  (cost=30282.67..165169.97 rows=17495 width=16) (actual time=943.744..1237.630 rows=9600 loops=5)
+                    Buffers: shared hit=36348 read=84606
+                    ->  Partial HashAggregate  (cost=40218.90..40258.90 rows=4000 width=16) (actual time=781.784..782.714 rows=4000 loops=2)
+                          Group Key: _hyper_3_258_chunk.meter_id
+                          Buffers: shared hit=10376 read=19864
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_3_258_chunk  (cost=0.00..36892.60 rows=665260 width=16) (actual time=0.096..490.513 rows=1330520 loops=2)
+                                Buffers: shared hit=10376 read=19864
+                    ->  Partial HashAggregate  (cost=40217.57..40257.58 rows=4001 width=16) (actual time=315.011..315.843 rows=4000 loops=5)
+                          Group Key: _hyper_3_257_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=1631 read=28608
+                          Worker 0:  Batches: 1  Memory Usage: 465kB
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          Worker 3:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_3_257_chunk  (cost=0.00..36891.38 rows=665238 width=16) (actual time=0.069..205.889 rows=532190 loops=5)
+                                Buffers: shared hit=1631 read=28608
+                    ->  Partial HashAggregate  (cost=40215.09..40255.06 rows=3997 width=16) (actual time=819.867..820.548 rows=4000 loops=2)
+                          Group Key: _hyper_3_256_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=1407 read=28830
+                          Worker 2:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_3_256_chunk  (cost=0.00..36889.06 rows=665206 width=16) (actual time=0.035..532.750 rows=1330412 loops=2)
+                                Buffers: shared hit=1407 read=28830
+                    ->  Partial HashAggregate  (cost=30282.67..30322.64 rows=3997 width=16) (actual time=460.636..461.635 rows=4000 loops=2)
+                          Group Key: _hyper_3_259_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=21239
+                          Worker 1:  Batches: 1  Memory Usage: 465kB
+                          ->  Parallel Seq Scan on _hyper_3_259_chunk  (cost=0.00..27268.11 rows=602911 width=16) (actual time=0.029..254.424 rows=934512 loops=2)
+                                Buffers: shared hit=21239
+                    ->  Partial HashAggregate  (cost=13948.33..13988.32 rows=3999 width=16) (actual time=473.583..474.572 rows=4000 loops=1)
+                          Group Key: _hyper_3_255_chunk.meter_id
+                          Batches: 1  Memory Usage: 465kB
+                          Buffers: shared hit=1695 read=7304
+                          ->  Parallel Seq Scan on _hyper_3_255_chunk  (cost=0.00..12298.55 rows=329955 width=16) (actual time=0.007..297.023 rows=791893 loops=1)
+                                Buffers: shared hit=1695 read=7304
+Planning:
+  Buffers: shared hit=33
+Planning Time: 1.137 ms
+Execution Time: 1283.139 ms

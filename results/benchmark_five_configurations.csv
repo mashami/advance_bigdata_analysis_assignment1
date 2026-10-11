@@ -1,0 +1,6 @@
+query,energy_readings_3h_median_ms,energy_readings_median_ms,energy_readings_week_median_ms,energy_time_compressed_median_ms,energy_meter_compressed_median_ms,time_compressed_improvement_pct,meter_compressed_improvement_pct
+Q1,27.526,28.174,35.254,85.737,235.963,-204.3,-737.5
+Q2,122.713,94.255,152.332,133.22,74.373,-41.3,21.1
+Q3,2694.953,679.561,670.47,150.15,122.51,77.9,82.0
+Q4,4.252,1.718,1.166,39.133,2.229,-2177.8,-29.7
+Q5,464.75,394.035,371.294,129.186,211.67,67.2,46.3

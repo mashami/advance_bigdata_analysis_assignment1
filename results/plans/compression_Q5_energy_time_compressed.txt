@@ -1,0 +1,157 @@
+Finalize Aggregate  (cost=143599.76..143599.77 rows=1 width=40) (actual time=233.368..241.468 rows=1 loops=1)
+  Buffers: shared hit=69663
+  ->  Gather  (cost=5665.34..143599.70 rows=4 width=64) (actual time=9.531..241.393 rows=36 loops=1)
+        Workers Planned: 4
+        Workers Launched: 4
+        Buffers: shared hit=69663
+        ->  Parallel Append  (cost=4665.34..142599.30 rows=1 width=64) (actual time=32.953..211.381 rows=7 loops=5)
+              Buffers: shared hit=69663
+              ->  Custom Scan (VectorAgg)  (cost=4665.34..4665.35 rows=1 width=64) (actual time=32.673..32.684 rows=1 loops=1)
+                    Buffers: shared hit=2328
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_288_chunk  (cost=10.29..2110.18 rows=204413 width=16) (actual time=0.000..0.005 rows=348417 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_288_chunk_compressed  (cost=0.00..66.05 rows=205 width=68) (actual time=0.016..0.631 rows=349 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=36.045..36.048 rows=1 loops=1)
+                    Buffers: shared hit=2513
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_261_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.000 rows=380089 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_261_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.029..0.595 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=45.979..45.983 rows=1 loops=1)
+                    Buffers: shared hit=2515
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_262_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380087 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_262_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.022..0.906 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=44.332..44.334 rows=1 loops=1)
+                    Buffers: shared hit=2514
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_263_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.000 rows=380151 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_263_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.015..0.851 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=41.730..41.733 rows=1 loops=1)
+                    Buffers: shared hit=2498
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_264_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.002 rows=380019 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_264_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.016..0.696 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=37.969..37.973 rows=1 loops=1)
+                    Buffers: shared hit=2437
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_265_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.002 rows=380126 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_265_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.010..0.842 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=35.851..35.854 rows=1 loops=1)
+                    Buffers: shared hit=2439
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_266_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380144 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_266_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.011..0.548 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=39.050..39.052 rows=1 loops=1)
+                    Buffers: shared hit=2504
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_267_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380113 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_267_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.007..0.517 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=44.503..44.507 rows=1 loops=1)
+                    Buffers: shared hit=2503
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_268_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.002 rows=380122 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_268_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.013..0.603 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=33.188..33.193 rows=1 loops=1)
+                    Buffers: shared hit=2503
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_269_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380149 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_269_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.013..0.544 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=36.096..36.099 rows=1 loops=1)
+                    Buffers: shared hit=2504
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_270_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380123 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_270_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.019..0.623 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=33.037..33.040 rows=1 loops=1)
+                    Buffers: shared hit=2506
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_271_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380123 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_271_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.017..0.607 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=46.887..46.891 rows=1 loops=1)
+                    Buffers: shared hit=2441
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_272_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380151 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_272_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.013..0.707 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=38.650..38.654 rows=1 loops=1)
+                    Buffers: shared hit=2442
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_273_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.002 rows=380203 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_273_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.014..0.630 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=32.989..32.991 rows=1 loops=1)
+                    Buffers: shared hit=2502
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_274_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380096 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_274_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.012..0.649 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=32.463..32.466 rows=1 loops=1)
+                    Buffers: shared hit=2504
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_275_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380100 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_275_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.006..0.533 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=36.906..36.909 rows=1 loops=1)
+                    Buffers: shared hit=2505
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_276_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380156 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_276_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.024..0.671 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=35.756..35.759 rows=1 loops=1)
+                    Buffers: shared hit=2504
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_277_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380204 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_277_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.022..0.728 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=26.142..26.144 rows=1 loops=2)
+                    Buffers: shared hit=2532
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_278_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=190044 loops=2)
+                          ->  Parallel Seq Scan on _hyper_4_278_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.017..0.356 rows=190 loops=2)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=38.263..38.265 rows=1 loops=1)
+                    Buffers: shared hit=2444
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_279_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.000 rows=380211 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_279_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.025..0.763 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=7.456..7.458 rows=1 loops=5)
+                    Buffers: shared hit=2519
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_280_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.000 rows=76042 loops=5)
+                          ->  Parallel Seq Scan on _hyper_4_280_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.019..0.184 rows=76 loops=5)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=11.189..11.191 rows=1 loops=3)
+                    Buffers: shared hit=2527
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_281_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=126684 loops=3)
+                          ->  Parallel Seq Scan on _hyper_4_281_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.017..0.239 rows=127 loops=3)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=32.440..32.443 rows=1 loops=1)
+                    Buffers: shared hit=2482
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_282_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380152 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_282_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.008..0.394 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=30.410..30.413 rows=1 loops=1)
+                    Buffers: shared hit=2486
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_283_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380121 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_283_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.005..0.394 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=28.452..28.456 rows=1 loops=1)
+                    Buffers: shared hit=2483
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_284_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380185 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_284_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.005..0.347 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=29.010..29.015 rows=1 loops=1)
+                    Buffers: shared hit=2484
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_285_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.002 rows=380157 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_285_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.005..0.327 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=38.179..38.182 rows=1 loops=1)
+                    Buffers: shared hit=2420
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_286_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380119 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_286_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.017..0.425 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=5093.01..5093.02 rows=1 width=64) (actual time=46.659..46.666 rows=1 loops=1)
+                    Buffers: shared hit=2422
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_287_chunk  (cost=10.27..2300.36 rows=223412 width=16) (actual time=0.000..0.001 rows=380147 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_287_chunk_compressed  (cost=0.00..66.24 rows=224 width=68) (actual time=0.013..0.703 rows=381 loops=1)
+                                Buffers: shared hit=64
+              ->  Custom Scan (VectorAgg)  (cost=422.33..422.34 rows=1 width=64) (actual time=5.718..5.727 rows=1 loops=1)
+                    Buffers: shared hit=202
+                    ->  Custom Scan (ColumnarScan) on _hyper_4_260_chunk  (cost=10.12..192.25 rows=18406 width=16) (actual time=0.000..0.005 rows=31717 loops=1)
+                          ->  Parallel Seq Scan on _hyper_4_260_chunk_compressed  (cost=0.00..8.19 rows=19 width=68) (actual time=0.010..0.184 rows=32 loops=1)
+                                Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=352
+Planning Time: 5.076 ms
+Execution Time: 242.794 ms

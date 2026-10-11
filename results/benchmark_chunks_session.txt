@@ -1,0 +1,6 @@
+machine=Mashamis-MacBook-Air.local
+client=psycopg 3 (Python)
+timer=time.perf_counter
+start_cat=2026-10-11T08:30:47.957+02:00
+end_cat=2026-10-11T08:31:30.367+02:00
+session_seconds=42.408

@@ -1,0 +1,38 @@
+Limit  (cost=56215.01..56215.04 rows=10 width=16) (actual time=258.783..263.274 rows=10 loops=1)
+  Buffers: shared hit=36919 read=675
+  ->  Sort  (cost=56215.01..56221.73 rows=2688 width=16) (actual time=258.782..263.271 rows=10 loops=1)
+        Sort Key: (sum(energy_readings_week.power_kw)) DESC, energy_readings_week.event_time
+        Sort Method: top-N heapsort  Memory: 25kB
+        Buffers: shared hit=36919 read=675
+        ->  Finalize HashAggregate  (cost=56130.04..56156.92 rows=2688 width=16) (actual time=258.556..263.172 rows=672 loops=1)
+              Group Key: energy_readings_week.event_time
+              Batches: 1  Memory Usage: 177kB
+              Buffers: shared hit=36919 read=675
+              ->  Gather  (cost=22455.30..56112.88 rows=3432 width=16) (actual time=257.814..262.608 rows=1531 loops=1)
+                    Workers Planned: 3
+                    Workers Launched: 3
+                    Buffers: shared hit=36919 read=675
+                    ->  Parallel Append  (cost=21455.30..54769.68 rows=1144 width=16) (actual time=234.817..254.323 rows=383 loops=4)
+                          Buffers: shared hit=36919 read=675
+                          ->  Partial HashAggregate  (cost=21455.30..21462.02 rows=672 width=16) (actual time=214.252..214.291 rows=200 loops=2)
+                                Group Key: _hyper_3_258_chunk.event_time
+                                Buffers: shared hit=15680 read=675
+                                Worker 0:  Batches: 1  Memory Usage: 57kB
+                                Worker 1:  Batches: 1  Memory Usage: 57kB
+                                ->  Parallel Index Scan Backward using _hyper_3_258_chunk_energy_readings_week_time_idx on _hyper_3_258_chunk  (cost=0.43..20180.64 rows=254932 width=16) (actual time=0.690..150.261 rows=395979 loops=2)
+                                      Index Cond: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                      Buffers: shared hit=15680 read=675
+                          ->  Partial HashAggregate  (cost=33297.22..33301.94 rows=472 width=16) (actual time=147.079..147.133 rows=283 loops=4)
+                                Group Key: _hyper_3_259_chunk.event_time
+                                Batches: 1  Memory Usage: 73kB
+                                Buffers: shared hit=21239
+                                Worker 0:  Batches: 1  Memory Usage: 49kB
+                                Worker 1:  Batches: 1  Memory Usage: 49kB
+                                Worker 2:  Batches: 1  Memory Usage: 73kB
+                                ->  Parallel Seq Scan on _hyper_3_259_chunk  (cost=0.00..30282.67 rows=602911 width=16) (actual time=0.012..76.461 rows=467256 loops=4)
+                                      Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                      Buffers: shared hit=21239
+Planning:
+  Buffers: shared hit=19 read=10
+Planning Time: 0.606 ms
+Execution Time: 263.459 ms

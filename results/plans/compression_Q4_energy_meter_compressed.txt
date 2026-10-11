@@ -1,0 +1,59 @@
+Finalize Aggregate  (cost=33.34..33.35 rows=1 width=24) (actual time=0.339..0.344 rows=1 loops=1)
+  Buffers: shared hit=78
+  ->  Append  (cost=4.17..33.27 rows=8 width=48) (actual time=0.044..0.336 rows=8 loops=1)
+        Buffers: shared hit=78
+        ->  Custom Scan (VectorAgg)  (cost=4.17..4.18 rows=1 width=48) (actual time=0.044..0.044 rows=1 loops=1)
+              Buffers: shared hit=12
+              ->  Custom Scan (ColumnarScan) on _hyper_5_310_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=8 loops=1)
+                    Vectorized Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                    Rows Removed by Filter: 86
+                    ->  Index Scan using _hyper_5_310_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_310_chunk_compressed  (cost=0.28..2.50 rows=1 width=124) (actual time=0.014..0.014 rows=1 loops=1)
+                          Index Cond: ((meter_id = 1000000000) AND (_ts_meta_v2_first_event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.16..4.17 rows=1 width=48) (actual time=0.045..0.045 rows=1 loops=1)
+              Buffers: shared hit=9
+              ->  Custom Scan (ColumnarScan) on _hyper_5_311_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=93 loops=1)
+                    ->  Index Scan using _hyper_5_311_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_311_chunk_compressed  (cost=0.28..2.50 rows=1 width=76) (actual time=0.019..0.020 rows=1 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.16..4.17 rows=1 width=48) (actual time=0.041..0.042 rows=1 loops=1)
+              Buffers: shared hit=9
+              ->  Custom Scan (ColumnarScan) on _hyper_5_312_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=94 loops=1)
+                    ->  Index Scan using _hyper_5_312_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_312_chunk_compressed  (cost=0.28..2.50 rows=1 width=76) (actual time=0.010..0.010 rows=1 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.16..4.17 rows=1 width=48) (actual time=0.045..0.046 rows=1 loops=1)
+              Buffers: shared hit=9
+              ->  Custom Scan (ColumnarScan) on _hyper_5_313_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=95 loops=1)
+                    ->  Index Scan using _hyper_5_313_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_313_chunk_compressed  (cost=0.28..2.50 rows=1 width=76) (actual time=0.020..0.020 rows=1 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.16..4.17 rows=1 width=48) (actual time=0.040..0.040 rows=1 loops=1)
+              Buffers: shared hit=9
+              ->  Custom Scan (ColumnarScan) on _hyper_5_314_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=95 loops=1)
+                    ->  Index Scan using _hyper_5_314_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_314_chunk_compressed  (cost=0.28..2.50 rows=1 width=76) (actual time=0.013..0.013 rows=1 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.16..4.17 rows=1 width=48) (actual time=0.036..0.037 rows=1 loops=1)
+              Buffers: shared hit=9
+              ->  Custom Scan (ColumnarScan) on _hyper_5_315_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=93 loops=1)
+                    ->  Index Scan using _hyper_5_315_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_315_chunk_compressed  (cost=0.28..2.50 rows=1 width=76) (actual time=0.014..0.014 rows=1 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.16..4.17 rows=1 width=48) (actual time=0.032..0.032 rows=1 loops=1)
+              Buffers: shared hit=9
+              ->  Custom Scan (ColumnarScan) on _hyper_5_316_chunk  (cost=3.45..3.45 rows=95 width=16) (actual time=0.000..0.000 rows=96 loops=1)
+                    ->  Index Scan using _hyper_5_316_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_316_chunk_compressed  (cost=0.28..2.50 rows=1 width=76) (actual time=0.009..0.009 rows=1 loops=1)
+                          Index Cond: (meter_id = 1000000000)
+                          Buffers: shared hit=3
+        ->  Custom Scan (VectorAgg)  (cost=4.03..4.04 rows=1 width=48) (actual time=0.045..0.046 rows=1 loops=1)
+              Buffers: shared hit=12
+              ->  Custom Scan (ColumnarScan) on _hyper_5_317_chunk  (cost=3.37..3.37 rows=87 width=16) (actual time=0.000..0.000 rows=85 loops=1)
+                    Vectorized Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                    ->  Index Scan using _hyper_5_317_chunk_compressed_meter_id__ts_meta_v2_first_ev_idx on _hyper_5_317_chunk_compressed  (cost=0.28..2.50 rows=1 width=124) (actual time=0.012..0.013 rows=1 loops=1)
+                          Index Cond: ((meter_id = 1000000000) AND (_ts_meta_v2_first_event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                          Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=97
+Planning Time: 0.841 ms
+Execution Time: 0.570 ms

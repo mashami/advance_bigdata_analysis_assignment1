@@ -1,0 +1,993 @@
+
+[1;33m===== Setup: containers =====[0m  2026-10-11 08:21:59 CAT
+ Container emqx  Running
+ Container tsdb  Running
+
+[1;33m===== 1.1 Database, extension, time zone, environment =====[0m  2026-10-11 08:21:59 CAT
+psql:sql/01_setup.sql:2: NOTICE:  extension "timescaledb" already exists, skipping
+  database   | session_time_zone |            now_cat            
+-------------+-------------------+-------------------------------
+ energy_grid | Africa/Kigali     | 2026-10-11 08:22:02.058477+02
+(1 row)
+
+   extname   | extversion 
+-------------+------------
+ timescaledb | 2.30.2
+(1 row)
+
+                                            version                                             
+------------------------------------------------------------------------------------------------
+ PostgreSQL 17.11 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+(1 row)
+
+                name                | setting | unit 
+------------------------------------+---------+------
+ effective_cache_size               | 752384  | 8kB
+ jit                                | off     | 
+ max_parallel_workers_per_gather    | 4       | 
+ max_worker_processes               | 27      | 
+ shared_buffers                     | 250752  | 8kB
+ timescaledb.max_background_workers | 16      | 
+ work_mem                           | 7837    | kB
+(7 rows)
+
+     cat_day_bucket     
+------------------------
+ 2026-09-21 00:00:00+02
+(1 row)
+
+recorded_at_cat                 : 2026-10-11T08:22:02.623+02:00
+cpu_model                       : Apple M3
+cpu_cores                       : 8
+ram_gb                          : 16.0
+os                              : macOS 14.6
+storage                         : SSD (Apple Fabric)
+python                          : 3.13.7
+postgresql                      : 17.11
+timescaledb                     : 2.30.2
+session_time_zone               : Africa/Kigali
+shared_buffers                  : 1959MB
+work_mem                        : 7837kB
+max_parallel_workers_per_gather : 4
+jit                             : off
+emqx                            : 
+postgresql_runtime              : Docker container (timescale/timescaledb:latest-pg17) inside the Docker Desktop Linux VM
+docker_vm_limits                : 8 CPUs, 8218316800 bytes RAM
+container_limits                : NanoCpus=0 Memory=0 (0 = no per-container limit)
+
+[1;33m===== 1.2 Tables and meters =====[0m  2026-10-11 08:22:04 CAT
+psql:sql/02_tables.sql:3: NOTICE:  table "energy_live" does not exist, skipping
+psql:sql/02_tables.sql:4: NOTICE:  table "energy_readings" does not exist, skipping
+psql:sql/02_tables.sql:5: NOTICE:  table "meters" does not exist, skipping
+      create_hypertable       
+------------------------------
+ (1,public,energy_readings,t)
+(1 row)
+
+   table_name    | pos |  column_name  |        data_type         
+-----------------+-----+---------------+--------------------------
+ energy_live     |   1 | meter_id      | bigint
+ energy_live     |   2 | event_time    | timestamp with time zone
+ energy_live     |   3 | received_time | timestamp with time zone
+ energy_live     |   4 | power_kw      | double precision
+ energy_live     |   5 | voltage_v     | double precision
+ energy_live     |   6 | current_a     | double precision
+ energy_live     |   7 | frequency_hz  | double precision
+ energy_live     |   8 | energy_kwh    | double precision
+ energy_readings |   1 | meter_id      | bigint
+ energy_readings |   2 | event_time    | timestamp with time zone
+ energy_readings |   3 | received_time | timestamp with time zone
+ energy_readings |   4 | power_kw      | double precision
+ energy_readings |   5 | voltage_v     | double precision
+ energy_readings |   6 | current_a     | double precision
+ energy_readings |   7 | frequency_hz  | double precision
+ energy_readings |   8 | energy_kwh    | double precision
+ meters          |   1 | meter_id      | bigint
+ meters          |   2 | region        | text
+ meters          |   3 | customer_type | text
+ meters          |   4 | base_power_kw | double precision
+ meters          |   5 | power_factor  | double precision
+(21 rows)
+
+ hypertable_name | column_name | chunk_interval 
+-----------------+-------------+----------------
+ energy_readings | event_time  | 1 day
+(1 row)
+
+dictionaries returned by meter_metadata(): 4,000
+rows in meters after commit             : 4,000
+
+[1;33m===== 1.3 MQTT pilot =====[0m  2026-10-11 08:22:05 CAT
+[2026-10-11T08:22:10.146+02:00] publisher finished
+  started_cat             : 2026-10-11T08:22:08.760+02:00
+  finished_cat            : 2026-10-11T08:22:10.146+02:00
+  taken_from_generator    : 2000
+  publish_calls_ok        : 2000
+  publish_failed          : 0
+  acknowledged_by_broker  : 2000
+[2026-10-11T08:22:08.732+02:00] subscriber ready on energy/meters/# (QoS 1, mode=batched); energy_live rows = 0
+  received 2,000
+[2026-10-11T08:22:18.187+02:00] subscriber finished
+  received              : 2000
+  redelivered_dup_flag  : 0
+  parse_errors          : 0
+  insert_errors         : 0
+  inserted_committed    : 2000
+  energy_live_rows      : 2000
+  mode                  : batched
+  finished_cat          : 2026-10-11T08:22:18.187+02:00
+                               stage | count | diff vs 2,000
+--------------------------------------+-------+---------------
+1. dictionaries taken from generator | 2,000 |             0
+  2. messages acknowledged by broker | 2,000 |             0
+  3. messages received by subscriber | 2,000 |             0
+    4. rows committed in energy_live | 2,000 |             0
+
+subscriber parse errors=0  insert errors=0  DUP-flag redeliveries=0
+distinct (meter_id, event_time) pairs in energy_live: 1994 (deliberate generator duplicates = 6)
+
+     meter_id |                event_time |             received_time | power_kw |  voltage_v | current_a | frequency_hz | energy_kwh
+---------------+---------------------------+---------------------------+----------+------------+-----------+--------------+------------
+1,000,000,000 | 2026-09-01 00:00:00+02:00 | 2026-09-01 00:15:00+02:00 | 0.138149 | 232.037000 |  0.626710 |    49.989300 |   0.034537
+1,000,000,001 | 2026-09-01 00:00:00+02:00 | 2026-09-01 00:15:00+02:00 | 0.240683 | 232.623000 |  1.089104 |    50.020600 |   0.060171
+1,000,000,002 | 2026-09-01 00:00:00+02:00 | 2026-09-01 00:15:00+02:00 | 0.229850 | 227.159000 |  1.065102 |    49.989400 |   0.057463
+1,000,000,003 | 2026-09-01 00:00:00+02:00 | 2026-09-01 00:15:00+02:00 | 0.097976 | 227.713000 |  0.452907 |    49.974900 |   0.024494
+1,000,000,004 | 2026-09-01 00:00:00+02:00 | 2026-09-01 00:15:00+02:00 | 0.192393 | 229.181000 |  0.883666 |    49.969000 |   0.048098
+
+[1;33m===== 2.1 Full capture and load =====[0m  2026-10-11 08:22:18 CAT
+dataset_info(): planned_readings=10,752,000 expected_counts={"emitted_readings": 10696848, "unique_readings": 10643735, "duplicate_readings": 53113, "delayed_unique_readings": 213090, "missing_readings": 108265}
+  [2026-10-11T08:22:25.251+02:00] generated 1,000,000 (6.7 s)
+  [2026-10-11T08:22:31.503+02:00] generated 2,000,000 (12.9 s)
+  [2026-10-11T08:22:38.000+02:00] generated 3,000,000 (19.4 s)
+  [2026-10-11T08:22:44.472+02:00] generated 4,000,000 (25.9 s)
+  [2026-10-11T08:22:50.808+02:00] generated 5,000,000 (32.3 s)
+  [2026-10-11T08:22:57.399+02:00] generated 6,000,000 (38.8 s)
+  [2026-10-11T08:23:04.832+02:00] generated 7,000,000 (46.3 s)
+  [2026-10-11T08:23:11.371+02:00] generated 8,000,000 (52.8 s)
+  [2026-10-11T08:23:18.765+02:00] generated 9,000,000 (60.2 s)
+  [2026-10-11T08:23:25.512+02:00] generated 10,000,000 (67.0 s)
+[2026-10-11T08:23:29.976+02:00] generation finished: 10,696,848 dictionaries in 71.4 s
+CSV data rows: 10,696,848 (1.16 GB)
+[2026-10-11T08:25:10.475+02:00] load committed: 10,696,848 rows in 99.0 s
+
+Count check against expected_counts.emitted_readings = 10,696,848
+  dictionaries_consumed              10,696,848  OK
+  csv_data_rows                      10,696,848  OK
+  committed_energy_readings_rows     10,696,848  OK
+  generation_seconds                       71.4
+  load_seconds                             99.0
+  total_elapsed_seconds                   171.9
+   rows   | distinct_meters |     earliest_event     |      latest_event      
+----------+-----------------+------------------------+------------------------
+ 10696848 |            4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02
+(1 row)
+
+Time: 8527.710 ms (00:08.528)
+ table_data | indexes |  toast  |  total  | table_mb | index_mb | total_mb 
+------------+---------+---------+---------+----------+----------+----------
+ 958 MB     | 466 MB  | 0 bytes | 1423 MB |    957.6 |    465.9 |   1423.4
+(1 row)
+
+Time: 20.392 ms
+ chunks 
+--------
+     29
+(1 row)
+
+Time: 1.710 ms
+
+[1;33m===== 2.2 Data quality =====[0m  2026-10-11 08:25:20 CAT
+Time: 3.256 ms
+Time: 18824.453 ms (00:18.824)
+Time: 17.361 ms
+Time: 2269.327 ms (00:02.269)
+Time: 840.660 ms
+Time: 545.782 ms
+ planned  | emitted  | unique_pairs | extra_copies | delayed_unique | missing_pairs | off_grid_pairs | missing_pct | duplicate_pct | delayed_pct | completeness_pct | check_unique_plus_extra_eq_emitted | check_planned_minus_unique_eq_missing 
+----------+----------+--------------+--------------+----------------+---------------+----------------+-------------+---------------+-------------+------------------+------------------------------------+---------------------------------------
+ 10752000 | 10696848 |     10643735 |        53113 |         213090 |        108265 |              0 |      1.0069 |        0.4990 |      2.0020 |          98.9931 | t                                  | t
+(1 row)
+
+Time: 74402.317 ms (01:14.402)
+          entry          | measured | expected | match 
+-------------------------+----------+----------+-------
+ planned_readings        | 10752000 | 10752000 | t
+ emitted_readings        | 10696848 | 10696848 | t
+ unique_readings         | 10643735 | 10643735 | t
+ duplicate_readings      |    53113 |    53113 | t
+ delayed_unique_readings |   213090 |   213090 | t
+ missing_readings        |   108265 |   108265 | t
+(6 rows)
+
+Time: 3309.286 ms (00:03.309)
+      arrival       |  count   |     min_minutes     |     max_minutes      
+--------------------+----------+---------------------+----------------------
+ on time (15 min)   | 10430645 | 15.0000000000000000 |  15.0000000000000000
+ delayed 30-180 min |   213090 | 30.0000000000000000 | 180.0000000000000000
+(2 rows)
+
+Time: 6764.847 ms (00:06.765)
+  meter_id  |  region   | customer_type | missing_readings 
+------------+-----------+---------------+------------------
+ 1000003622 | Region 3  | commercial    |               47
+ 1000000106 | Region 7  | industrial    |               45
+ 1000000366 | Region 7  | commercial    |               45
+ 1000001259 | Region 10 | residential   |               44
+ 1000000189 | Region 10 | commercial    |               43
+(5 rows)
+
+Time: 2992.109 ms (00:02.992)
+
+[1;33m===== 2.3 Cleaning =====[0m  2026-10-11 08:27:10 CAT
+ stage  |   rows   |  sum_energy_kwh   
+--------+----------+-------------------
+ before | 10696848 | 3872863.893179211
+(1 row)
+
+Time: 1562.853 ms (00:01.563)
+Time: 3.100 ms
+Time: 7896.706 ms (00:07.897)
+ duplicate_pairs | extra_copies | conflicting_pairs 
+-----------------+--------------+-------------------
+           53113 |        53113 |                 0
+(1 row)
+
+Time: 6.553 ms
+ meter_id | event_time | received_time | power_kw | voltage_v | current_a | frequency_hz | energy_kwh 
+----------+------------+---------------+----------+-----------+-----------+--------------+------------
+(0 rows)
+
+Time: 7.555 ms
+Time: 0.466 ms
+Time: 12159.205 ms (00:12.159)
+Time: 5.014 ms
+Time: 5807.990 ms (00:05.808)
+ stage |   rows   |   sum_energy_kwh   | matches_expected_unique_readings 
+-------+----------+--------------------+----------------------------------
+ after | 10643735 | 3853704.3468159684 | t
+(1 row)
+
+Time: 248.922 ms
+ remaining_duplicate_pairs 
+---------------------------
+                         0
+(1 row)
+
+Time: 13111.579 ms (00:13.112)
+
+[1;33m===== 3.1 Chunk-interval tables =====[0m  2026-10-11 08:27:51 CAT
+psql:sql/06_chunk_tables.sql:4: NOTICE:  table "energy_readings_3h" does not exist, skipping
+psql:sql/06_chunk_tables.sql:5: NOTICE:  table "energy_readings_week" does not exist, skipping
+   hypertable_name    | chunk_interval | chunks |   first_chunk_start    |     last_chunk_end     
+----------------------+----------------+--------+------------------------+------------------------
+ energy_readings_3h   | 03:00:00       |    225 | 2026-08-31 23:00:00+02 | 2026-09-29 02:00:00+02
+ energy_readings      | 1 day          |     29 | 2026-08-31 02:00:00+02 | 2026-09-29 02:00:00+02
+ energy_readings_week | 7 days         |      5 | 2026-08-27 02:00:00+02 | 2026-10-01 02:00:00+02
+(3 rows)
+
+Time: 39.240 ms
+      tablename       |              indexname              |                                                        indexdef                                                         
+----------------------+-------------------------------------+-------------------------------------------------------------------------------------------------------------------------
+ energy_readings      | energy_readings_meter_time_idx      | CREATE INDEX energy_readings_meter_time_idx ON public.energy_readings USING btree (meter_id, event_time DESC)
+ energy_readings      | energy_readings_time_idx            | CREATE INDEX energy_readings_time_idx ON public.energy_readings USING btree (event_time DESC)
+ energy_readings_3h   | energy_readings_3h_meter_time_idx   | CREATE INDEX energy_readings_3h_meter_time_idx ON public.energy_readings_3h USING btree (meter_id, event_time DESC)
+ energy_readings_3h   | energy_readings_3h_time_idx         | CREATE INDEX energy_readings_3h_time_idx ON public.energy_readings_3h USING btree (event_time DESC)
+ energy_readings_week | energy_readings_week_meter_time_idx | CREATE INDEX energy_readings_week_meter_time_idx ON public.energy_readings_week USING btree (meter_id, event_time DESC)
+ energy_readings_week | energy_readings_week_time_idx       | CREATE INDEX energy_readings_week_time_idx ON public.energy_readings_week USING btree (event_time DESC)
+(6 rows)
+
+Time: 9.502 ms
+Time: 2.929 ms
+Time: 5.920 ms
+Time: 38759.535 ms (00:38.760)
+         tbl          |   rows   | meters |      first_event       |       last_event       |    sum_power_kw    |   sum_energy_kwh   | counts_ok | dates_ok |      power_diff       |      energy_diff      | sums_ok 
+----------------------+----------+--------+------------------------+------------------------+--------------------+--------------------+-----------+----------+-----------------------+-----------------------+---------
+ energy_readings      | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387792999 | 3853704.3468154133 | t         | t        |                     0 |                     0 | t
+ energy_readings_3h   | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387793003 | 3853704.3468154124 | t         | t        | 3.725290298461914e-09 | 9.313225746154785e-10 | t
+ energy_readings_week | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387793008 |  3853704.346815413 | t         | t        | 9.313225746154785e-09 | 4.656612873077393e-10 | t
+(3 rows)
+
+Time: 9.893 ms
+
+[1;33m===== 3.2 Chunk benchmark =====[0m  2026-10-11 08:30:26 CAT
+[2026-10-11T08:30:47.957+02:00] benchmark 'chunks' on Mashamis-MacBook-Air.local; warm cache; client=psycopg 170011, timer=time.perf_counter
+  Q1 energy_readings_3h         median       27.5 ms
+  Q1 energy_readings            median       31.1 ms
+  Q1 energy_readings_week       median       35.3 ms
+  Q2 energy_readings_3h         median      122.7 ms
+  Q2 energy_readings            median      113.1 ms
+  Q2 energy_readings_week       median      152.3 ms
+  Q3 energy_readings_3h         median     2695.0 ms
+  Q3 energy_readings            median      856.1 ms
+  Q3 energy_readings_week       median      670.5 ms
+  Q4 energy_readings_3h         median        4.3 ms
+  Q4 energy_readings            median        1.5 ms
+  Q4 energy_readings_week       median        1.2 ms
+  Q5 energy_readings_3h         median      464.8 ms
+  Q5 energy_readings            median      367.3 ms
+  Q5 energy_readings_week       median      371.3 ms
+
+Result check (vs first table, tolerance 0.001):
+query |                table |  rows | max_abs_diff | status
+-------+----------------------+-------+--------------+--------
+   Q1 |      energy_readings |    24 |     0.000000 |  MATCH
+   Q1 | energy_readings_week |    24 |     0.000000 |  MATCH
+   Q2 |      energy_readings |    10 |     0.000000 |  MATCH
+   Q2 | energy_readings_week |    10 |     0.000000 |  MATCH
+   Q3 |      energy_readings | 4,000 |     0.000000 |  MATCH
+   Q3 | energy_readings_week | 4,000 |     0.000000 |  MATCH
+   Q4 |      energy_readings |     1 |     0.000000 |  MATCH
+   Q4 | energy_readings_week |     1 |     0.000000 |  MATCH
+   Q5 |      energy_readings |     1 |     0.000000 |  MATCH
+   Q5 | energy_readings_week |     1 |     0.000000 |  MATCH
+
+Warm-cache timings (5 measured runs after 1 warm-up):
+query |                table |  median_ms |     min_ms |     max_ms
+-------+----------------------+------------+------------+------------
+   Q1 |   energy_readings_3h |  27.526000 |  26.760000 |  31.040000
+   Q1 |      energy_readings |  31.098000 |  29.488000 |  32.156000
+   Q1 | energy_readings_week |  35.254000 |  33.804000 |  47.057000
+   Q2 |   energy_readings_3h | 122.713000 | 110.716000 | 140.189000
+   Q2 |      energy_readings | 113.126000 | 111.341000 | 271.298000
+   Q2 | energy_readings_week | 152.332000 | 149.260000 | 158.180000
+   Q3 |   energy_readings_3h |  2,694.953 |  2,255.470 |  2,834.171
+   Q3 |      energy_readings | 856.069000 | 665.490000 |  2,109.999
+   Q3 | energy_readings_week | 670.470000 | 559.661000 | 779.297000
+   Q4 |   energy_readings_3h |   4.252000 |   3.279000 |   5.322000
+   Q4 |      energy_readings |   1.492000 |   1.277000 |   1.738000
+   Q4 | energy_readings_week |   1.166000 |   0.927000 |   1.588000
+   Q5 |   energy_readings_3h | 464.750000 | 373.287000 | 842.744000
+   Q5 |      energy_readings | 367.266000 | 354.074000 | 440.028000
+   Q5 | energy_readings_week | 371.294000 | 342.486000 | 417.771000
+
+session: 2026-10-11T08:30:47.957+02:00 -> 2026-10-11T08:31:30.367+02:00 = 42.4 s (first warm-up submission to last measured result)
+execution plans written to /Users/mashamipacifique/Documents/BigData/BigData_Analysis/Assignment_I_October_2026/results/plans
+
+[1;33m===== 4.1-4.2 Compression =====[0m  2026-10-11 08:31:42 CAT
+experiment start 2026-10-11T08:31:42.869+02:00  ->  cutoff (start - 48 h) 2026-10-09T08:31:42.869+02:00
+created tables, compression settings and paused policies: {'energy_time_compressed': 1000, 'energy_meter_compressed': 1001}
+  [2026-10-11T08:31:43.336+02:00] energy_time_compressed   08-31 02:00 rows= 31,717 load=  0.15s compress=0.05s
+  [2026-10-11T08:31:45.544+02:00] energy_time_compressed   09-01 02:00 rows=380,089 load=  1.84s compress=0.37s
+  [2026-10-11T08:31:47.389+02:00] energy_time_compressed   09-02 02:00 rows=380,087 load=  1.53s compress=0.31s
+  [2026-10-11T08:31:49.076+02:00] energy_time_compressed   09-03 02:00 rows=380,151 load=  1.35s compress=0.34s
+  [2026-10-11T08:31:50.838+02:00] energy_time_compressed   09-04 02:00 rows=380,019 load=  1.43s compress=0.32s
+  [2026-10-11T08:31:52.669+02:00] energy_time_compressed   09-05 02:00 rows=380,126 load=  1.41s compress=0.42s
+  [2026-10-11T08:31:54.765+02:00] energy_time_compressed   09-06 02:00 rows=380,144 load=  1.78s compress=0.31s
+  [2026-10-11T08:31:56.414+02:00] energy_time_compressed   09-07 02:00 rows=380,113 load=  1.31s compress=0.34s
+  [2026-10-11T08:31:58.115+02:00] energy_time_compressed   09-08 02:00 rows=380,122 load=  1.34s compress=0.36s
+  [2026-10-11T08:31:59.860+02:00] energy_time_compressed   09-09 02:00 rows=380,149 load=  1.42s compress=0.32s
+  [2026-10-11T08:32:01.732+02:00] energy_time_compressed   09-10 02:00 rows=380,123 load=  1.54s compress=0.33s
+  [2026-10-11T08:32:04.108+02:00] energy_time_compressed   09-11 02:00 rows=380,123 load=  2.02s compress=0.35s
+  [2026-10-11T08:32:06.114+02:00] energy_time_compressed   09-12 02:00 rows=380,151 load=  1.69s compress=0.31s
+  [2026-10-11T08:32:08.503+02:00] energy_time_compressed   09-13 02:00 rows=380,203 load=  1.90s compress=0.49s
+  [2026-10-11T08:32:10.352+02:00] energy_time_compressed   09-14 02:00 rows=380,096 load=  1.56s compress=0.28s
+  [2026-10-11T08:32:12.148+02:00] energy_time_compressed   09-15 02:00 rows=380,100 load=  1.48s compress=0.32s
+  [2026-10-11T08:32:14.522+02:00] energy_time_compressed   09-16 02:00 rows=380,156 load=  2.02s compress=0.35s
+  [2026-10-11T08:32:16.547+02:00] energy_time_compressed   09-17 02:00 rows=380,204 load=  1.62s compress=0.40s
+  [2026-10-11T08:32:18.241+02:00] energy_time_compressed   09-18 02:00 rows=380,088 load=  1.40s compress=0.29s
+  [2026-10-11T08:32:19.900+02:00] energy_time_compressed   09-19 02:00 rows=380,211 load=  1.34s compress=0.32s
+  [2026-10-11T08:32:21.853+02:00] energy_time_compressed   09-20 02:00 rows=380,212 load=  1.57s compress=0.38s
+  [2026-10-11T08:32:24.076+02:00] energy_time_compressed   09-21 02:00 rows=380,053 load=  1.93s compress=0.29s
+  [2026-10-11T08:32:25.938+02:00] energy_time_compressed   09-22 02:00 rows=380,152 load=  1.59s compress=0.26s
+  [2026-10-11T08:32:27.531+02:00] energy_time_compressed   09-23 02:00 rows=380,121 load=  1.30s compress=0.29s
+  [2026-10-11T08:32:29.162+02:00] energy_time_compressed   09-24 02:00 rows=380,185 load=  1.37s compress=0.26s
+  [2026-10-11T08:32:30.975+02:00] energy_time_compressed   09-25 02:00 rows=380,157 load=  1.51s compress=0.29s
+  [2026-10-11T08:32:33.178+02:00] energy_time_compressed   09-26 02:00 rows=380,119 load=  1.60s compress=0.60s
+  [2026-10-11T08:32:34.908+02:00] energy_time_compressed   09-27 02:00 rows=380,147 load=  1.44s compress=0.28s
+  [2026-10-11T08:32:36.781+02:00] energy_time_compressed   09-28 02:00 rows=348,417 load=  1.59s compress=0.27s
+  [2026-10-11T08:32:37.280+02:00] energy_meter_compressed  08-31 02:00 rows= 31,717 load=  0.10s compress=0.34s
+  [2026-10-11T08:32:39.625+02:00] energy_meter_compressed  09-01 02:00 rows=380,089 load=  1.50s compress=0.84s
+  [2026-10-11T08:32:41.980+02:00] energy_meter_compressed  09-02 02:00 rows=380,087 load=  1.56s compress=0.79s
+  [2026-10-11T08:32:45.446+02:00] energy_meter_compressed  09-03 02:00 rows=380,151 load=  2.60s compress=0.86s
+  [2026-10-11T08:32:47.870+02:00] energy_meter_compressed  09-04 02:00 rows=380,019 load=  1.58s compress=0.84s
+  [2026-10-11T08:32:50.070+02:00] energy_meter_compressed  09-05 02:00 rows=380,126 load=  1.39s compress=0.81s
+  [2026-10-11T08:32:52.198+02:00] energy_meter_compressed  09-06 02:00 rows=380,144 load=  1.34s compress=0.78s
+  [2026-10-11T08:32:54.708+02:00] energy_meter_compressed  09-07 02:00 rows=380,113 load=  1.61s compress=0.90s
+  [2026-10-11T08:32:56.855+02:00] energy_meter_compressed  09-08 02:00 rows=380,122 load=  1.32s compress=0.82s
+  [2026-10-11T08:32:59.009+02:00] energy_meter_compressed  09-09 02:00 rows=380,149 load=  1.34s compress=0.81s
+  [2026-10-11T08:33:01.556+02:00] energy_meter_compressed  09-10 02:00 rows=380,123 load=  1.65s compress=0.89s
+  [2026-10-11T08:33:04.171+02:00] energy_meter_compressed  09-11 02:00 rows=380,123 load=  1.77s compress=0.84s
+  [2026-10-11T08:33:06.467+02:00] energy_meter_compressed  09-12 02:00 rows=380,151 load=  1.45s compress=0.85s
+  [2026-10-11T08:33:08.614+02:00] energy_meter_compressed  09-13 02:00 rows=380,203 load=  1.30s compress=0.84s
+  [2026-10-11T08:33:11.259+02:00] energy_meter_compressed  09-14 02:00 rows=380,096 load=  1.79s compress=0.85s
+  [2026-10-11T08:33:14.498+02:00] energy_meter_compressed  09-15 02:00 rows=380,100 load=  2.26s compress=0.97s
+  [2026-10-11T08:33:16.859+02:00] energy_meter_compressed  09-16 02:00 rows=380,156 load=  1.48s compress=0.87s
+  [2026-10-11T08:33:19.160+02:00] energy_meter_compressed  09-17 02:00 rows=380,204 load=  1.44s compress=0.86s
+  [2026-10-11T08:33:21.477+02:00] energy_meter_compressed  09-18 02:00 rows=380,088 load=  1.47s compress=0.83s
+  [2026-10-11T08:33:24.344+02:00] energy_meter_compressed  09-19 02:00 rows=380,211 load=  1.91s compress=0.95s
+  [2026-10-11T08:33:26.707+02:00] energy_meter_compressed  09-20 02:00 rows=380,212 load=  1.48s compress=0.88s
+  [2026-10-11T08:33:28.852+02:00] energy_meter_compressed  09-21 02:00 rows=380,053 load=  1.32s compress=0.82s
+  [2026-10-11T08:33:31.221+02:00] energy_meter_compressed  09-22 02:00 rows=380,152 load=  1.44s compress=0.93s
+  [2026-10-11T08:33:33.752+02:00] energy_meter_compressed  09-23 02:00 rows=380,121 load=  1.37s compress=1.16s
+  [2026-10-11T08:33:36.067+02:00] energy_meter_compressed  09-24 02:00 rows=380,185 load=  1.29s compress=1.02s
+  [2026-10-11T08:33:39.130+02:00] energy_meter_compressed  09-25 02:00 rows=380,157 load=  2.08s compress=0.98s
+  [2026-10-11T08:33:41.445+02:00] energy_meter_compressed  09-26 02:00 rows=380,119 load=  1.48s compress=0.84s
+  [2026-10-11T08:33:44.203+02:00] energy_meter_compressed  09-27 02:00 rows=380,147 load=  1.85s compress=0.91s
+  [2026-10-11T08:33:46.847+02:00] energy_meter_compressed  09-28 02:00 rows=348,417 load=  1.57s compress=1.07s
+
+                  table | chunks | compressed |       rows |    load_s | compress_s
+-------------------------+--------+------------+------------+-----------+------------
+ energy_time_compressed |     29 |         29 | 10,643,735 | 44.043000 |   9.511000
+energy_meter_compressed |     29 |         29 | 10,643,735 | 44.744000 |  25.159000
+
+same compressed chunk ranges in both tables: True
+       hypertable        | segmentby |     orderby     | compress_interval_length |                                                                 index                                                                 
+-------------------------+-----------+-----------------+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------
+ energy_time_compressed  |           | event_time DESC |                          | [{"type": "minmax", "column": "event_time", "source": "orderby"}, {"type": "firstlast", "column": "event_time", "source": "orderby"}]
+ energy_meter_compressed | meter_id  | event_time DESC |                          | [{"type": "minmax", "column": "event_time", "source": "orderby"}, {"type": "firstlast", "column": "event_time", "source": "orderby"}]
+(2 rows)
+
+ job_id |     hypertable_name     |     proc_name      | scheduled |                       config                       
+--------+-------------------------+--------------------+-----------+----------------------------------------------------
+   1000 | energy_time_compressed  | policy_compression | f         | {"hypertable_id": 4, "compress_after": "48:00:00"}
+   1001 | energy_meter_compressed | policy_compression | f         | {"hypertable_id": 5, "compress_after": "48:00:00"}
+(2 rows)
+
+      range_start       |       range_end        | time_compressed | meter_compressed 
+------------------------+------------------------+-----------------+------------------
+ 2026-08-31 02:00:00+02 | 2026-09-01 02:00:00+02 | t               | t
+ 2026-09-01 02:00:00+02 | 2026-09-02 02:00:00+02 | t               | t
+ 2026-09-02 02:00:00+02 | 2026-09-03 02:00:00+02 | t               | t
+ 2026-09-03 02:00:00+02 | 2026-09-04 02:00:00+02 | t               | t
+ 2026-09-04 02:00:00+02 | 2026-09-05 02:00:00+02 | t               | t
+ 2026-09-05 02:00:00+02 | 2026-09-06 02:00:00+02 | t               | t
+ 2026-09-06 02:00:00+02 | 2026-09-07 02:00:00+02 | t               | t
+ 2026-09-07 02:00:00+02 | 2026-09-08 02:00:00+02 | t               | t
+ 2026-09-08 02:00:00+02 | 2026-09-09 02:00:00+02 | t               | t
+ 2026-09-09 02:00:00+02 | 2026-09-10 02:00:00+02 | t               | t
+ 2026-09-10 02:00:00+02 | 2026-09-11 02:00:00+02 | t               | t
+ 2026-09-11 02:00:00+02 | 2026-09-12 02:00:00+02 | t               | t
+ 2026-09-12 02:00:00+02 | 2026-09-13 02:00:00+02 | t               | t
+ 2026-09-13 02:00:00+02 | 2026-09-14 02:00:00+02 | t               | t
+ 2026-09-14 02:00:00+02 | 2026-09-15 02:00:00+02 | t               | t
+ 2026-09-15 02:00:00+02 | 2026-09-16 02:00:00+02 | t               | t
+ 2026-09-16 02:00:00+02 | 2026-09-17 02:00:00+02 | t               | t
+ 2026-09-17 02:00:00+02 | 2026-09-18 02:00:00+02 | t               | t
+ 2026-09-18 02:00:00+02 | 2026-09-19 02:00:00+02 | t               | t
+ 2026-09-19 02:00:00+02 | 2026-09-20 02:00:00+02 | t               | t
+ 2026-09-20 02:00:00+02 | 2026-09-21 02:00:00+02 | t               | t
+ 2026-09-21 02:00:00+02 | 2026-09-22 02:00:00+02 | t               | t
+ 2026-09-22 02:00:00+02 | 2026-09-23 02:00:00+02 | t               | t
+ 2026-09-23 02:00:00+02 | 2026-09-24 02:00:00+02 | t               | t
+ 2026-09-24 02:00:00+02 | 2026-09-25 02:00:00+02 | t               | t
+ 2026-09-25 02:00:00+02 | 2026-09-26 02:00:00+02 | t               | t
+ 2026-09-26 02:00:00+02 | 2026-09-27 02:00:00+02 | t               | t
+ 2026-09-27 02:00:00+02 | 2026-09-28 02:00:00+02 | t               | t
+ 2026-09-28 02:00:00+02 | 2026-09-29 02:00:00+02 | t               | t
+(29 rows)
+
+     hypertable_name     | chunks | compressed_chunks 
+-------------------------+--------+-------------------
+ energy_meter_compressed |     29 |                29
+ energy_time_compressed  |     29 |                29
+(2 rows)
+
+     hypertable_name     | chunk_interval | chunks |   first_chunk_start    |     last_chunk_end     
+-------------------------+----------------+--------+------------------------+------------------------
+ energy_readings_3h      | 03:00:00       |    225 | 2026-08-31 23:00:00+02 | 2026-09-29 02:00:00+02
+ energy_meter_compressed | 1 day          |     29 | 2026-08-31 02:00:00+02 | 2026-09-29 02:00:00+02
+ energy_readings         | 1 day          |     29 | 2026-08-31 02:00:00+02 | 2026-09-29 02:00:00+02
+ energy_time_compressed  | 1 day          |     29 | 2026-08-31 02:00:00+02 | 2026-09-29 02:00:00+02
+ energy_readings_week    | 7 days         |      5 | 2026-08-27 02:00:00+02 | 2026-10-01 02:00:00+02
+(5 rows)
+
+Time: 14.032 ms
+        tablename        |               indexname                |                                                           indexdef                                                            
+-------------------------+----------------------------------------+-------------------------------------------------------------------------------------------------------------------------------
+ energy_meter_compressed | energy_meter_compressed_meter_time_idx | CREATE INDEX energy_meter_compressed_meter_time_idx ON public.energy_meter_compressed USING btree (meter_id, event_time DESC)
+ energy_meter_compressed | energy_meter_compressed_time_idx       | CREATE INDEX energy_meter_compressed_time_idx ON public.energy_meter_compressed USING btree (event_time DESC)
+ energy_readings         | energy_readings_meter_time_idx         | CREATE INDEX energy_readings_meter_time_idx ON public.energy_readings USING btree (meter_id, event_time DESC)
+ energy_readings         | energy_readings_time_idx               | CREATE INDEX energy_readings_time_idx ON public.energy_readings USING btree (event_time DESC)
+ energy_readings_3h      | energy_readings_3h_meter_time_idx      | CREATE INDEX energy_readings_3h_meter_time_idx ON public.energy_readings_3h USING btree (meter_id, event_time DESC)
+ energy_readings_3h      | energy_readings_3h_time_idx            | CREATE INDEX energy_readings_3h_time_idx ON public.energy_readings_3h USING btree (event_time DESC)
+ energy_readings_week    | energy_readings_week_meter_time_idx    | CREATE INDEX energy_readings_week_meter_time_idx ON public.energy_readings_week USING btree (meter_id, event_time DESC)
+ energy_readings_week    | energy_readings_week_time_idx          | CREATE INDEX energy_readings_week_time_idx ON public.energy_readings_week USING btree (event_time DESC)
+ energy_time_compressed  | energy_time_compressed_meter_time_idx  | CREATE INDEX energy_time_compressed_meter_time_idx ON public.energy_time_compressed USING btree (meter_id, event_time DESC)
+ energy_time_compressed  | energy_time_compressed_time_idx        | CREATE INDEX energy_time_compressed_time_idx ON public.energy_time_compressed USING btree (event_time DESC)
+(10 rows)
+
+Time: 5.622 ms
+Time: 2.159 ms
+Time: 4.277 ms
+Time: 50256.824 ms (00:50.257)
+           tbl           |   rows   | meters |      first_event       |       last_event       |    sum_power_kw    |   sum_energy_kwh   | counts_ok | dates_ok |      power_diff       |      energy_diff      | sums_ok 
+-------------------------+----------+--------+------------------------+------------------------+--------------------+--------------------+-----------+----------+-----------------------+-----------------------+---------
+ energy_meter_compressed | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387792999 | 3853704.3468154133 | t         | t        |                     0 |                     0 | t
+ energy_readings         | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387792999 | 3853704.3468154133 | t         | t        |                     0 |                     0 | t
+ energy_readings_3h      | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387793003 | 3853704.3468154124 | t         | t        | 3.725290298461914e-09 | 9.313225746154785e-10 | t
+ energy_readings_week    | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387793008 |  3853704.346815413 | t         | t        | 9.313225746154785e-09 | 4.656612873077393e-10 | t
+ energy_time_compressed  | 10643735 |   4000 | 2026-09-01 00:00:00+02 | 2026-09-28 23:45:00+02 | 15414817.387793005 |  3853704.346815414 | t         | t        | 5.587935447692871e-09 | 4.656612873077393e-10 | t
+(5 rows)
+
+Time: 12.077 ms
+baseline = energy_readings (uncompressed, 1 day chunks); cutoff = 2026-10-09T08:31:42.869+02:00
+data_mb includes heap + TOAST (compressed columns live mostly in TOAST)
+
+                  table |    data_mb |   index_mb |   total_mb | compression_ratio | percent_saved | compression_seconds | compressed_chunks | rows_in_compressed_chunks_pct
+-------------------------+------------+------------+------------+-------------------+---------------+---------------------+-------------------+-------------------------------
+        energy_readings | 950.880000 | 465.870000 |  1,416.740 |          1.000000 |      0.000000 |                None |              0/29 |                      0.000000
+ energy_time_compressed | 437.800000 |   0.920000 | 438.730000 |          3.230000 |     69.030000 |            9.511000 |             29/29 |                    100.000000
+energy_meter_compressed | 496.200000 |   5.450000 | 501.650000 |          2.820000 |     64.590000 |           25.159000 |             29/29 |                    100.000000
+
+[1;33m===== 4.3 Compression benchmark =====[0m  2026-10-11 08:34:38 CAT
+[2026-10-11T08:34:42.528+02:00] benchmark 'compression' on Mashamis-MacBook-Air.local; warm cache; client=psycopg 170011, timer=time.perf_counter
+  Q1 energy_readings            median       28.2 ms
+  Q1 energy_time_compressed     median       85.7 ms
+  Q1 energy_meter_compressed    median      236.0 ms
+  Q2 energy_readings            median       94.3 ms
+  Q2 energy_time_compressed     median      133.2 ms
+  Q2 energy_meter_compressed    median       74.4 ms
+  Q3 energy_readings            median      679.6 ms
+  Q3 energy_time_compressed     median      150.2 ms
+  Q3 energy_meter_compressed    median      122.5 ms
+  Q4 energy_readings            median        1.7 ms
+  Q4 energy_time_compressed     median       39.1 ms
+  Q4 energy_meter_compressed    median        2.2 ms
+  Q5 energy_readings            median      394.0 ms
+  Q5 energy_time_compressed     median      129.2 ms
+  Q5 energy_meter_compressed    median      211.7 ms
+
+Result check (vs first table, tolerance 0.001):
+query |                   table |  rows | max_abs_diff | status
+-------+-------------------------+-------+--------------+--------
+   Q1 |  energy_time_compressed |    24 |     0.000000 |  MATCH
+   Q1 | energy_meter_compressed |    24 |     0.000000 |  MATCH
+   Q2 |  energy_time_compressed |    10 |     0.000000 |  MATCH
+   Q2 | energy_meter_compressed |    10 |     0.000000 |  MATCH
+   Q3 |  energy_time_compressed | 4,000 |     0.000000 |  MATCH
+   Q3 | energy_meter_compressed | 4,000 |     0.000000 |  MATCH
+   Q4 |  energy_time_compressed |     1 |     0.000000 |  MATCH
+   Q4 | energy_meter_compressed |     1 |     0.000000 |  MATCH
+   Q5 |  energy_time_compressed |     1 |     0.000000 |  MATCH
+   Q5 | energy_meter_compressed |     1 |     0.000000 |  MATCH
+
+Warm-cache timings (5 measured runs after 1 warm-up):
+query |                   table |  median_ms |     min_ms |     max_ms
+-------+-------------------------+------------+------------+------------
+   Q1 |         energy_readings |  28.174000 |  27.325000 |  29.867000
+   Q1 |  energy_time_compressed |  85.737000 |  33.200000 | 119.021000
+   Q1 | energy_meter_compressed | 235.963000 | 223.965000 | 277.198000
+   Q2 |         energy_readings |  94.255000 |  83.995000 | 107.495000
+   Q2 |  energy_time_compressed | 133.220000 | 107.424000 | 276.193000
+   Q2 | energy_meter_compressed |  74.373000 |  62.109000 |  85.923000
+   Q3 |         energy_readings | 679.561000 | 590.402000 | 728.210000
+   Q3 |  energy_time_compressed | 150.150000 | 114.696000 | 176.451000
+   Q3 | energy_meter_compressed | 122.510000 | 112.209000 | 170.448000
+   Q4 |         energy_readings |   1.718000 |   1.437000 |   1.892000
+   Q4 |  energy_time_compressed |  39.133000 |  22.685000 | 190.031000
+   Q4 | energy_meter_compressed |   2.229000 |   1.659000 |   5.182000
+   Q5 |         energy_readings | 394.035000 | 350.537000 | 519.934000
+   Q5 |  energy_time_compressed | 129.186000 | 114.291000 | 133.428000
+   Q5 | energy_meter_compressed | 211.670000 | 184.638000 | 332.710000
+
+session: 2026-10-11T08:34:42.528+02:00 -> 2026-10-11T08:35:00.667+02:00 = 18.1 s (first warm-up submission to last measured result)
+execution plans written to /Users/mashamipacifique/Documents/BigData/BigData_Analysis/Assignment_I_October_2026/results/plans
+Median ms (warm cache). Baseline for improvement: energy_readings from the compression session.
+query |         3h |       1day |       week |  time_comp | meter_comp | time_comp_impr_% | meter_comp_impr_%
+-------+------------+------------+------------+------------+------------+------------------+-------------------
+   Q1 |  27.526000 |  28.174000 |  35.254000 |  85.737000 | 235.963000 |      -204.300000 |       -737.500000
+   Q2 | 122.713000 |  94.255000 | 152.332000 | 133.220000 |  74.373000 |       -41.300000 |         21.100000
+   Q3 |  2,694.953 | 679.561000 | 670.470000 | 150.150000 | 122.510000 |        77.900000 |         82.000000
+   Q4 |   4.252000 |   1.718000 |   1.166000 |  39.133000 |   2.229000 |       -2,177.800 |        -29.700000
+   Q5 | 464.750000 | 394.035000 | 371.294000 | 129.186000 | 211.670000 |        67.200000 |         46.300000
+job_id |               proc |              hypertable | schedule | scheduled |                                             config | last_status | next_start
+--------+--------------------+-------------------------+----------+-----------+----------------------------------------------------+-------------+------------
+ 1,000 | policy_compression |  energy_time_compressed | 12:00:00 |      True | {"hypertable_id": 4, "compress_after": "48:00:00"} |        None |       None
+ 1,001 | policy_compression | energy_meter_compressed | 12:00:00 |      True | {"hypertable_id": 5, "compress_after": "48:00:00"} |        None |       None
+
+[1;33m===== 5 Analysis and anomalies =====[0m  2026-10-11 08:35:04 CAT
+=== 5.1 Demand patterns ===
+   day_cat    energy_kwh  readings weekday  period
+2026-09-01 141195.236949    380120     Tue       0
+2026-09-02 141533.898450    380100     Wed       0
+2026-09-03 141938.491454    380136     Thu       0
+2026-09-04 142301.475853    380055     Fri       0
+2026-09-05 111680.476864    380083     Sat       0
+2026-09-06 111950.736316    380172     Sun       0
+2026-09-07 143598.744748    380102     Mon       0
+2026-09-08 144126.999500    380119     Tue       1
+2026-09-09 144519.795898    380138     Wed       1
+2026-09-10 144818.079367    380175     Thu       1
+2026-09-11 145348.886228    380090     Fri       1
+2026-09-12 114025.490417    380190     Sat       1
+2026-09-13 114264.085809    380138     Sun       1
+2026-09-14 146611.634790    380134     Mon       1
+2026-09-15 147144.618355    380081     Tue       2
+2026-09-16 147508.121008    380174     Wed       2
+2026-09-17 147968.920001    380196     Thu       2
+2026-09-18 148320.196632    380077     Fri       2
+2026-09-19 116242.445617    380212     Sat       2
+2026-09-20 116493.001954    380224     Sun       2
+2026-09-21 149552.722854    380036     Mon       2
+2026-09-22 150056.527916    380170     Tue       3
+2026-09-23 150430.650123    380117     Wed       3
+2026-09-24 150800.610218    380160     Thu       3
+2026-09-25 151190.779137    380185     Fri       3
+2026-09-26 118623.963322    380086     Sat       3
+2026-09-27 118993.599747    380203     Sun       3
+2026-09-28 152464.157286    380062     Mon       3
+          label    energy_kwh
+01 Sep - 07 Sep 934199.060635
+08 Sep - 14 Sep 953714.972010
+15 Sep - 21 Sep 973230.026421
+22 Sep - 28 Sep 992560.287750
+
+Three highest 15-minute network demand intervals:
+               event_time  network_kw  meters_reporting
+2026-09-28 13:00:00+02:00 7993.691474              3965
+2026-09-28 12:45:00+02:00 7943.946545              3969
+2026-09-28 13:15:00+02:00 7943.635736              3952
+
+=== 5.2 Regions and customer types ===
+   region  meters    energy_kwh  kwh_per_meter  share_pct
+ Region 8     400 503475.828891    1258.689572  13.064724
+ Region 5     400 411040.393514    1027.600984  10.666111
+ Region 9     400 400467.195021    1001.167988  10.391747
+ Region 3     400 392376.593951     980.941485  10.181803
+ Region 1     400 383539.805155     958.849513   9.952497
+ Region 2     400 378448.888100     946.122220   9.820392
+ Region 7     400 362288.543760     905.721359   9.401047
+Region 10     400 351149.783608     877.874459   9.112006
+ Region 6     400 346512.837387     866.282093   8.991682
+ Region 4     400 324404.477429     811.011194   8.417991
+customer_type  meters   energy_kwh  kwh_per_meter  share_pct
+   industrial     406 2.220672e+06    5469.635556  57.624349
+   commercial    1010 8.254752e+05     817.302132  21.420303
+  residential    2584 8.075572e+05     312.522120  20.955348
+
+Customer mix per region (meter counts) - explains regional differences:
+customer_type  commercial  industrial  residential
+region                                            
+Region 1              116          37          247
+Region 10             105          34          261
+Region 2               98          39          263
+Region 3               94          46          260
+Region 4               94          29          277
+Region 5               94          48          258
+Region 6              105          32          263
+Region 7              103          35          262
+Region 8              105          61          234
+Region 9               96          45          259
+
+=== 5.3 Reporting quality ===
+   region meters  planned observed    completeness_pct
+ Region 6    400  1075200  1064118 98.9693080357142857
+ Region 7    400  1075200  1064237 98.9803757440476190
+ Region 5    400  1075200  1064290 98.9853050595238095
+ Region 3    400  1075200  1064327 98.9887462797619048
+  NETWORK   4000 10752000 10643735 98.9930710565476190
+ Region 9    400  1075200  1064388 98.9944196428571429
+Region 10    400  1075200  1064415 98.9969308035714286
+ Region 2    400  1075200  1064419 98.9973028273809524
+ Region 4    400  1075200  1064441 98.9993489583333333
+ Region 1    400  1075200  1064513 99.0060453869047619
+ Region 8    400  1075200  1064587 99.0129278273809524
+
+21 September energy, arrivals by 00:00 on 22 Sep vs all arrivals:
+by_midnight_kwh          149400.544532
+by_midnight_rows         379505.000000
+all_arrivals_kwh         149552.722854
+all_rows                 380036.000000
+difference_kwh              152.178322
+difference_pct_of_final       0.101756
+
+Readings of 21 Sep arriving after midnight, by interval (last 4 hours):
+               event_time  late_rows
+2026-09-21 20:00:00+02:00          0
+2026-09-21 20:15:00+02:00          0
+2026-09-21 20:30:00+02:00          0
+2026-09-21 20:45:00+02:00          0
+2026-09-21 21:00:00+02:00          0
+2026-09-21 21:15:00+02:00          5
+2026-09-21 21:30:00+02:00         14
+2026-09-21 21:45:00+02:00         27
+2026-09-21 22:00:00+02:00         30
+2026-09-21 22:15:00+02:00         37
+2026-09-21 22:30:00+02:00         50
+2026-09-21 22:45:00+02:00         69
+2026-09-21 23:00:00+02:00         49
+2026-09-21 23:15:00+02:00         71
+2026-09-21 23:30:00+02:00         95
+2026-09-21 23:45:00+02:00         84
+
+charts saved in /Users/mashamipacifique/Documents/BigData/BigData_Analysis/Assignment_I_October_2026/results/figures
+Rule: flag if power_kw / median(same meter, slot, day type) >= 2.0 or <= 0.4
+flags raised: 474 (spike 236, drop 238)
+
+  meter_id                event_time  power_kw  expected_kw    ratio flag_type
+1000000244 2026-09-07 12:00:00+02:00  0.435106     0.140090 3.105903     spike
+1000000244 2026-09-07 12:15:00+02:00  0.398933     0.157350 2.535323     spike
+1000000244 2026-09-07 12:30:00+02:00  0.375480     0.153033 2.453596     spike
+1000000244 2026-09-07 12:45:00+02:00  0.441385     0.158636 2.782376     spike
+1000000244 2026-09-07 13:00:00+02:00  0.365003     0.152205 2.398101     spike
+1000000244 2026-09-07 13:15:00+02:00  0.484347     0.153633 3.152634     spike
+1000000244 2026-09-07 13:30:00+02:00  0.442782     0.156188 2.834930     spike
+1000000244 2026-09-07 13:45:00+02:00  0.414389     0.155032 2.672926     spike
+1000000244 2026-09-07 14:00:00+02:00  0.491992     0.171358 2.871135     spike
+1000000244 2026-09-07 14:15:00+02:00  0.554638     0.185227 2.994369     spike
+1000000244 2026-09-07 14:30:00+02:00  0.486840     0.185733 2.621175     spike
+1000000244 2026-09-07 14:45:00+02:00  0.515293     0.215425 2.391983     spike
+1000000253 2026-09-18 07:00:00+02:00  1.783305     0.694249 2.568684     spike
+1000000253 2026-09-18 07:15:00+02:00  2.106625     0.643023 3.276130     spike
+1000000253 2026-09-18 07:30:00+02:00  1.807010     0.694538 2.601746     spike
+
+Comparison with the 40 injected events:
+     meter_id |   event_type |                     start |                       end | flags_inside |   result
+---------------+--------------+---------------------------+---------------------------+--------------+----------
+1,000,000,643 | demand_spike | 2026-09-04T17:00:00+02:00 | 2026-09-04T20:00:00+02:00 |           12 | DETECTED
+1,000,001,481 | unusual_drop | 2026-09-20T17:00:00+02:00 | 2026-09-20T20:00:00+02:00 |           12 | DETECTED
+1,000,002,602 | demand_spike | 2026-09-14T09:00:00+02:00 | 2026-09-14T12:00:00+02:00 |           12 | DETECTED
+1,000,002,435 | unusual_drop | 2026-09-25T17:00:00+02:00 | 2026-09-25T20:00:00+02:00 |           12 | DETECTED
+1,000,003,052 | demand_spike | 2026-09-01T17:00:00+02:00 | 2026-09-01T20:00:00+02:00 |           12 | DETECTED
+1,000,001,799 | unusual_drop | 2026-09-06T10:00:00+02:00 | 2026-09-06T13:00:00+02:00 |           12 | DETECTED
+1,000,000,333 | demand_spike | 2026-09-18T06:00:00+02:00 | 2026-09-18T09:00:00+02:00 |           12 | DETECTED
+1,000,000,856 | unusual_drop | 2026-09-04T17:00:00+02:00 | 2026-09-04T20:00:00+02:00 |           12 | DETECTED
+1,000,000,513 | demand_spike | 2026-09-03T15:00:00+02:00 | 2026-09-03T18:00:00+02:00 |           12 | DETECTED
+1,000,003,684 | unusual_drop | 2026-09-05T11:00:00+02:00 | 2026-09-05T14:00:00+02:00 |           12 | DETECTED
+1,000,001,041 | demand_spike | 2026-09-10T13:00:00+02:00 | 2026-09-10T16:00:00+02:00 |           11 | DETECTED
+1,000,000,957 | unusual_drop | 2026-09-23T11:00:00+02:00 | 2026-09-23T14:00:00+02:00 |           12 | DETECTED
+1,000,000,749 | demand_spike | 2026-09-25T08:00:00+02:00 | 2026-09-25T11:00:00+02:00 |           12 | DETECTED
+1,000,003,229 | unusual_drop | 2026-09-28T08:00:00+02:00 | 2026-09-28T11:00:00+02:00 |           12 | DETECTED
+1,000,001,393 | demand_spike | 2026-09-01T09:00:00+02:00 | 2026-09-01T12:00:00+02:00 |           12 | DETECTED
+1,000,003,562 | unusual_drop | 2026-09-20T06:00:00+02:00 | 2026-09-20T09:00:00+02:00 |           12 | DETECTED
+1,000,002,294 | demand_spike | 2026-09-16T18:00:00+02:00 | 2026-09-16T21:00:00+02:00 |           12 | DETECTED
+1,000,000,945 | unusual_drop | 2026-09-10T14:00:00+02:00 | 2026-09-10T17:00:00+02:00 |           12 | DETECTED
+1,000,001,172 | demand_spike | 2026-09-12T16:00:00+02:00 | 2026-09-12T19:00:00+02:00 |           12 | DETECTED
+1,000,000,739 | unusual_drop | 2026-09-26T11:00:00+02:00 | 2026-09-26T14:00:00+02:00 |           12 | DETECTED
+1,000,000,253 | demand_spike | 2026-09-18T07:00:00+02:00 | 2026-09-18T10:00:00+02:00 |           12 | DETECTED
+1,000,003,842 | unusual_drop | 2026-09-28T12:00:00+02:00 | 2026-09-28T15:00:00+02:00 |           11 | DETECTED
+1,000,000,244 | demand_spike | 2026-09-07T12:00:00+02:00 | 2026-09-07T15:00:00+02:00 |           12 | DETECTED
+1,000,003,960 | unusual_drop | 2026-09-21T12:00:00+02:00 | 2026-09-21T15:00:00+02:00 |           12 | DETECTED
+1,000,001,624 | demand_spike | 2026-09-26T11:00:00+02:00 | 2026-09-26T14:00:00+02:00 |           11 | DETECTED
+1,000,003,519 | unusual_drop | 2026-09-02T11:00:00+02:00 | 2026-09-02T14:00:00+02:00 |           12 | DETECTED
+1,000,002,485 | demand_spike | 2026-09-16T16:00:00+02:00 | 2026-09-16T19:00:00+02:00 |           12 | DETECTED
+1,000,001,570 | unusual_drop | 2026-09-11T11:00:00+02:00 | 2026-09-11T14:00:00+02:00 |           12 | DETECTED
+1,000,001,931 | demand_spike | 2026-09-15T16:00:00+02:00 | 2026-09-15T19:00:00+02:00 |           12 | DETECTED
+1,000,001,552 | unusual_drop | 2026-09-25T12:00:00+02:00 | 2026-09-25T15:00:00+02:00 |           12 | DETECTED
+1,000,000,676 | demand_spike | 2026-09-15T11:00:00+02:00 | 2026-09-15T14:00:00+02:00 |           12 | DETECTED
+1,000,003,772 | unusual_drop | 2026-09-26T08:00:00+02:00 | 2026-09-26T11:00:00+02:00 |           12 | DETECTED
+1,000,002,262 | demand_spike | 2026-09-19T07:00:00+02:00 | 2026-09-19T10:00:00+02:00 |           12 | DETECTED
+1,000,000,563 | unusual_drop | 2026-09-16T14:00:00+02:00 | 2026-09-16T17:00:00+02:00 |           12 | DETECTED
+1,000,003,392 | demand_spike | 2026-09-01T11:00:00+02:00 | 2026-09-01T14:00:00+02:00 |           11 | DETECTED
+1,000,003,791 | unusual_drop | 2026-09-16T15:00:00+02:00 | 2026-09-16T18:00:00+02:00 |           11 | DETECTED
+1,000,003,128 | demand_spike | 2026-09-13T07:00:00+02:00 | 2026-09-13T10:00:00+02:00 |           12 | DETECTED
+1,000,003,027 | unusual_drop | 2026-09-11T18:00:00+02:00 | 2026-09-11T21:00:00+02:00 |           12 | DETECTED
+1,000,003,350 | demand_spike | 2026-09-23T16:00:00+02:00 | 2026-09-23T19:00:00+02:00 |           11 | DETECTED
+1,000,001,660 | unusual_drop | 2026-09-10T15:00:00+02:00 | 2026-09-10T18:00:00+02:00 |           12 | DETECTED
+
+  injected_events                          40
+  detected                                 40
+  missed                                   0
+  flags_total                              474
+  true_flags                               474
+  false_flags                              0
+  observed_readings                        10643735
+  readings_inside_injected_intervals       474
+  readings_outside_injected_intervals      10643261
+  false_flag_pct_of_outside_readings       0.0
+  meters_with_false_flags                  0
+  pct_of_meters_affected_by_false_flags    0.0
+
+[1;33m===== 6 Continuous aggregates and freshness test =====[0m  2026-10-11 08:35:51 CAT
+        view_name        | materialized_only | materialization_hypertable_name 
+-------------------------+-------------------+---------------------------------
+ cagg_energy_15m_region  | t                 | _materialized_hypertable_6
+ cagg_energy_day_meter   | t                 | _materialized_hypertable_8
+ cagg_energy_hour_region | t                 | _materialized_hypertable_7
+(3 rows)
+
+        view_name        |                                        view_definition                                         
+-------------------------+------------------------------------------------------------------------------------------------
+ cagg_energy_15m_region  |  SELECT time_bucket('00:15:00'::interval, r.event_time) AS bucket,                            +
+                         |     m.region,                                                                                 +
+                         |     sum(r.energy_kwh) AS sum_energy_kwh,                                                      +
+                         |     sum(r.power_kw) AS sum_power_kw,                                                          +
+                         |     count(*) AS reading_count                                                                 +
+                         |    FROM (energy_readings r                                                                    +
+                         |      JOIN meters m ON ((r.meter_id = m.meter_id)))                                            +
+                         |   GROUP BY (time_bucket('00:15:00'::interval, r.event_time)), m.region;
+ cagg_energy_day_meter   |  SELECT time_bucket('1 day'::interval, event_time, 'Africa/Kigali'::text) AS bucket,          +
+                         |     meter_id,                                                                                 +
+                         |     sum(energy_kwh) AS sum_energy_kwh,                                                        +
+                         |     sum(power_kw) AS sum_power_kw,                                                            +
+                         |     count(*) AS reading_count                                                                 +
+                         |    FROM energy_readings                                                                       +
+                         |   GROUP BY (time_bucket('1 day'::interval, event_time, 'Africa/Kigali'::text)), meter_id;
+ cagg_energy_hour_region |  SELECT time_bucket('01:00:00'::interval, r.event_time, 'Africa/Kigali'::text) AS bucket,     +
+                         |     m.region,                                                                                 +
+                         |     sum(r.energy_kwh) AS sum_energy_kwh,                                                      +
+                         |     sum(r.power_kw) AS sum_power_kw,                                                          +
+                         |     count(*) AS reading_count                                                                 +
+                         |    FROM (energy_readings r                                                                    +
+                         |      JOIN meters m ON ((r.meter_id = m.meter_id)))                                            +
+                         |   GROUP BY (time_bucket('01:00:00'::interval, r.event_time, 'Africa/Kigali'::text)), m.region;
+(3 rows)
+
+[2026-10-11T08:36:08.045+02:00] refreshed cagg_energy_15m_region: 26,880 rows in 15.8 s
+[2026-10-11T08:36:30.326+02:00] refreshed cagg_energy_hour_region: 6,720 rows in 22.3 s
+[2026-10-11T08:36:46.881+02:00] refreshed cagg_energy_day_meter: 112,000 rows in 16.5 s
+
+                   view | rows_before | rows_after |             refresh_start_cat | refresh_seconds |  data_mb | index_mb |  total_mb
+-------------------------+-------------+------------+-------------------------------+-----------------+----------+----------+-----------
+ cagg_energy_15m_region |           0 |     26,880 | 2026-10-11T08:35:52.184+02:00 |       15.837000 | 2.110000 | 2.040000 |  4.150000
+cagg_energy_hour_region |           0 |      6,720 | 2026-10-11T08:36:08.046+02:00 |       22.263000 | 0.640000 | 0.590000 |  1.230000
+  cagg_energy_day_meter |           0 |    112,000 | 2026-10-11T08:36:30.327+02:00 |       16.526000 | 7.410000 | 5.150000 | 12.550000
+
+Refresh policies:
+job_id |                    view | schedule |                                                                       config | scheduled | last_status | next_start
+--------+-------------------------+----------+------------------------------------------------------------------------------+-----------+-------------+------------
+ 1,002 |  cagg_energy_15m_region |  0:15:00 | {"end_offset": "01:00:00", "start_offset": "3 days", "mat_hypertable_id": 6} |      True |        None |       None
+ 1,003 | cagg_energy_hour_region |  0:15:00 | {"end_offset": "01:00:00", "start_offset": "3 days", "mat_hypertable_id": 7} |      True |        None |       None
+ 1,004 |   cagg_energy_day_meter |  0:15:00 | {"end_offset": "01:00:00", "start_offset": "3 days", "mat_hypertable_id": 8} |      True |        None |       None
+
+Sample rows:
+                   bucket |      key | sum_energy_kwh | sum_power_kw | reading_count
+---------------------------+----------+----------------+--------------+---------------
+2026-09-01 00:00:00+02:00 | Region 9 |     116.193890 |   464.775566 |           397
+2026-09-01 00:00:00+02:00 | Region 8 |     152.518661 |   610.074642 |           396
+2026-09-01 00:00:00+02:00 | Region 7 |      99.098990 |   396.395968 |           395
+
+                   bucket |      key | sum_energy_kwh | sum_power_kw | reading_count
+---------------------------+----------+----------------+--------------+---------------
+2026-09-01 00:00:00+02:00 | Region 9 |     454.735289 |    1,818.941 |         1,588
+2026-09-01 00:00:00+02:00 | Region 8 |     602.715767 |    2,410.863 |         1,588
+2026-09-01 00:00:00+02:00 | Region 7 |     393.893795 |    1,575.575 |         1,592
+
+                   bucket |           key | sum_energy_kwh | sum_power_kw | reading_count
+---------------------------+---------------+----------------+--------------+---------------
+2026-09-01 00:00:00+02:00 | 1,000,002,063 |      13.711220 |    54.844882 |            96
+2026-09-01 00:00:00+02:00 | 1,000,000,039 |       6.833232 |    27.332921 |            94
+2026-09-01 00:00:00+02:00 | 1,000,001,003 |      10.089154 |    40.356612 |            95
+
+test time (CAT)      : 2026-10-11T08:36:47.242+02:00
+H (last full hour)   : 2026-10-11 07:00 CAT
+H - 48 h (older hour): 2026-10-09 07:00 CAT
+chosen event_times   : 09 Oct 07:10 -> 1.0 kWh, 09 Oct 07:25 -> 0.5 kWh, 11 Oct 07:10 -> 2.0 kWh
+view: materialized_only = True | refresh policies on this view: 0
+
+--- Stage 1: 1 kWh inserted in older hour, refreshed older hour only, real-time OFF  [2026-10-11T08:36:47.287+02:00]
+      hour |       bucket |         raw table |          aggregate
+------------+--------------+-------------------+--------------------
+older hour | 09 Oct 07:00 | 1.0 kWh, 1 row(s) |  1.0 kWh, 1 row(s)
+    hour H | 11 Oct 07:00 |           no rows | no bucket returned
+
+--- Stage 2: +0.5 kWh older hour, +2 kWh hour H, no refresh, real-time OFF  [2026-10-11T08:36:47.295+02:00]
+      hour |       bucket |         raw table |          aggregate
+------------+--------------+-------------------+--------------------
+older hour | 09 Oct 07:00 | 1.5 kWh, 2 row(s) |  1.0 kWh, 1 row(s)
+    hour H | 11 Oct 07:00 | 2.0 kWh, 1 row(s) | no bucket returned
+
+--- Stage 3: real-time aggregation ON, still no refresh  [2026-10-11T08:36:47.317+02:00]
+      hour |       bucket |         raw table |         aggregate
+------------+--------------+-------------------+-------------------
+older hour | 09 Oct 07:00 | 1.5 kWh, 2 row(s) | 1.0 kWh, 1 row(s)
+    hour H | 11 Oct 07:00 | 2.0 kWh, 1 row(s) | 2.0 kWh, 1 row(s)
+
+--- Stage 4: both complete hours refreshed manually  [2026-10-11T08:36:47.330+02:00]
+      hour |       bucket |         raw table |         aggregate
+------------+--------------+-------------------+-------------------
+older hour | 09 Oct 07:00 | 1.5 kWh, 2 row(s) | 1.5 kWh, 2 row(s)
+    hour H | 11 Oct 07:00 | 2.0 kWh, 1 row(s) | 2.0 kWh, 1 row(s)
+
+materialization watermark now: 2026-10-11 08:00:00+02:00
+6.1 policy window at test time: [08 Oct 08:36, 11 Oct 07:36)
+  -> only whole hourly buckets inside it: 08 Oct 09:00 up to 11 Oct 07:00 (exclusive)
+  older hour 09 Oct 07:00 refreshable: True
+  hour H     11 Oct 07:00 refreshable: False
+
+[1;33m===== 7.3 Dashboard data verification =====[0m  2026-10-11 08:36:47 CAT
+Raw vs Aggregate, 2026-09-22 00:00 to 2026-09-29 00:00 CAT (exclusive), meter 1000000000
+          panel | rows_raw | rows_agg | keys_ok | counts_ok |            value | max_abs_diff |    limit | result
+-----------------+----------+----------+---------+-----------+------------------+--------------+----------+--------
+hourly_regional |    1,680 |    1,680 |    True |      True |       energy_kwh |     0.000000 | 0.001000 |   PASS
+  daily_network |        7 |        7 |    True |      True |       energy_kwh |     0.000000 | 0.001000 |   PASS
+ weekly_network |        1 |        1 |    True |      True |       energy_kwh |     0.000000 | 0.001000 |   PASS
+    meter_daily |        7 |        7 |    True |      True |       energy_kwh |     0.000000 | 0.001000 |   PASS
+   completeness |       10 |       10 |    True |      True | completeness_pct |     0.000000 | 0.000001 |   PASS
+
+[1;33m===== 8 Forecast =====[0m  2026-10-11 08:36:50 CAT
+=== 8.1 dataset ===
+readings per region-hour: min 1562, median 1584, max 1597 (planned 400 meters x 4 = 1,600)
+hourly grid rows: 6,720; absent region-hours: 0
+
+Features:
+          feature |                lag_hours | window |    earliest usable target
+-------------------+--------------------------+--------+---------------------------
+          lag_24h |                       24 |    1 h | 2026-09-02 00:00:00+02:00
+          lag_48h |                       48 |    1 h | 2026-09-03 00:00:00+02:00
+         lag_168h |                      168 |    1 h | 2026-09-08 00:00:00+02:00
+   prev_day_total | 24-47 (previous CAT day) |   24 h | 2026-09-02 00:00:00+02:00
+           region |                        - |      - |              calendar/key
+             hour |                        - |      - |                  calendar
+dow (day of week) |                        - |      - |                  calendar
+
+Leakage check: every lag source timestamp must precede the forecast origin
+       feature | smallest origin - source gap | all_before_origin
+----------------+------------------------------+-------------------
+       lag_24h |              0 days 01:00:00 |              True
+       lag_48h |              1 days 01:00:00 |              True
+      lag_168h |              6 days 01:00:00 |              True
+prev_day_total |              0 days 01:00:00 |              True
+
+Lookback 168 h: training rows before exclusion 3,360, excluded 1,680, retained 1,680 (earliest usable target 2026-09-08 00:00:00+02:00)
+     split |  rows | usable_rows |              first_target |               last_target
+------------+-------+-------------+---------------------------+---------------------------
+     train | 3,360 |       1,680 | 2026-09-08 00:00:00+02:00 | 2026-09-14 23:00:00+02:00
+validation | 1,680 |       1,680 | 2026-09-15 00:00:00+02:00 | 2026-09-21 23:00:00+02:00
+      test | 1,680 |       1,680 | 2026-09-22 00:00:00+02:00 | 2026-09-28 23:00:00+02:00
+
+Feature example (Region 1, first test day 07:00-09:00):
+               hour_start                    origin  energy_kwh    lag_24h            lag_24h_source   lag_168h           lag_168h_source  prev_day_total
+2026-09-22 07:00:00+02:00 2026-09-22 00:00:00+02:00  645.063962 645.128617 2026-09-21 07:00:00+02:00 640.267674 2026-09-15 07:00:00+02:00    14937.309732
+2026-09-22 08:00:00+02:00 2026-09-22 00:00:00+02:00  672.884711 676.418681 2026-09-21 08:00:00+02:00 665.797375 2026-09-15 08:00:00+02:00    14937.309732
+2026-09-22 09:00:00+02:00 2026-09-22 00:00:00+02:00  698.812723 687.054305 2026-09-21 09:00:00+02:00 674.224305 2026-09-15 09:00:00+02:00    14937.309732
+
+=== 8.2 previous-day baseline ===
+test predictions: 1,680  MAE 42.708 kWh  RMSE 79.403 kWh
+  region                hour_start  energy_kwh  baseline_kwh
+Region 1 2026-09-22 00:00:00+02:00  435.589852    441.869168
+Region 1 2026-09-22 01:00:00+02:00  438.892476    435.374052
+Region 1 2026-09-22 02:00:00+02:00  437.375285    432.510325
+Region 1 2026-09-22 03:00:00+02:00  447.844121    443.205576
+Region 1 2026-09-22 04:00:00+02:00  463.196811    468.379565
+
+=== 8.3 Ridge regression ===
+shared predictors: numeric ['lag_24h', 'lag_48h', 'lag_168h', 'prev_day_total'] (standardised) + one-hot ['region', 'hour', 'dow']; preprocessing fitted on training rows only
+config |           settings | train_rows | val_rows | val_MAE_kWh | val_RMSE_kWh
+--------+--------------------+------------+----------+-------------+--------------
+    R1 |   Ridge(alpha=0.1) |      1,680 |    1,680 |    4.431633 |     5.643264
+    R2 |   Ridge(alpha=1.0) |      1,680 |    1,680 |    4.439892 |     5.651691
+    R3 |  Ridge(alpha=10.0) |      1,680 |    1,680 |    4.818734 |     6.184042
+    R4 | Ridge(alpha=100.0) |      1,680 |    1,680 |    7.955349 |    11.772832
+selected: R1 Ridge(alpha=0.1) (lowest validation MAE) - frozen, not refitted
+test predictions: 1,680
+  region                hour_start  energy_kwh  baseline_kwh  model_kwh
+Region 1 2026-09-22 00:00:00+02:00  435.589852    441.869168 439.327584
+Region 1 2026-09-22 01:00:00+02:00  438.892476    435.374052 439.374123
+Region 1 2026-09-22 02:00:00+02:00  437.375285    432.510325 442.260803
+Region 1 2026-09-22 03:00:00+02:00  447.844121    443.205576 439.470566
+Region 1 2026-09-22 04:00:00+02:00  463.196811    468.379565 467.382414
+
+=== 8.4 comparison on the 1,680 test observations (error = predicted - actual) ===
+   region | baseline_MAE | model_MAE | baseline_RMSE | model_RMSE | MAE_improvement_%
+-----------+--------------+-----------+---------------+------------+-------------------
+      ALL |    42.708281 |  4.559204 |     79.402867 |   5.791248 |         89.324777
+ Region 1 |    44.873117 |  4.692205 |     83.695759 |   5.874943 |         89.543394
+Region 10 |    39.716855 |  4.225757 |     74.281635 |   5.302566 |         89.360292
+ Region 2 |    41.628612 |  4.528548 |     76.810539 |   5.649987 |         89.121548
+ Region 3 |    42.753727 |  4.256672 |     77.607456 |   5.563559 |         90.043741
+ Region 4 |    34.856463 |  4.055966 |     64.232754 |   5.118176 |         88.363804
+ Region 5 |    44.400445 |  5.230526 |     81.084334 |   6.613329 |         88.219655
+ Region 6 |    39.425942 |  3.718844 |     74.766375 |   4.692372 |         90.567521
+ Region 7 |    39.688289 |  4.390273 |     73.944966 |   5.740549 |         88.938116
+ Region 8 |    55.967231 |  5.824829 |    102.057263 |   7.171317 |         89.592429
+ Region 9 |    43.772130 |  4.668421 |     80.178337 |   5.791890 |         89.334718
+
+MAE by test day (kWh) - shows where the previous-day rule breaks:
+        baseline_MAE  model_MAE
+day                            
+Tue 22          4.99       4.60
+Wed 23          4.65       4.65
+Thu 24          5.31       5.20
+Fri 25          5.01       5.02
+Sat 26        135.70       3.63
+Sun 27          3.84       3.92
+Mon 28        139.46       4.90
+
+Peak actual test hour per region:
+   region                hour_start  energy_kwh  baseline_kwh  baseline_abs_err  model_kwh  model_abs_err
+ Region 1 2026-09-28 13:00:00+02:00      835.61        565.27            270.34     826.48           9.13
+Region 10 2026-09-28 13:00:00+02:00      743.03        502.33            240.71     735.07           7.96
+ Region 2 2026-09-28 13:00:00+02:00      780.13        546.91            233.21     774.24           5.89
+ Region 3 2026-09-28 13:00:00+02:00      783.00        554.69            228.32     790.77           7.77
+ Region 4 2026-09-28 18:00:00+02:00      659.90        561.41             98.50     655.98           3.92
+ Region 5 2026-09-28 13:00:00+02:00      828.23        577.36            250.87     826.20           2.03
+ Region 6 2026-09-28 13:00:00+02:00      749.11        504.41            244.70     731.38          17.73
+ Region 7 2026-09-25 13:00:00+02:00      751.05        736.64             14.41     743.89           7.16
+ Region 8 2026-09-25 13:00:00+02:00     1016.55       1010.53              6.02    1012.73           3.82
+ Region 9 2026-09-23 13:00:00+02:00      808.96        796.89             12.07     804.44           4.52
+
+plot saved: /Users/mashamipacifique/Documents/BigData/BigData_Analysis/Assignment_I_October_2026/results/figures/s8_forecast_region.png
+
+[1;33m===== Done =====[0m  2026-10-11 08:36:57 CAT
+Results: results/   Charts: results/figures/   Log: logs/run_all.log

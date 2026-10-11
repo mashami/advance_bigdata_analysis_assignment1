@@ -1,0 +1,6 @@
+{
+  "1. dictionaries taken from generator": 2000,
+  "2. messages acknowledged by broker": 2000,
+  "3. messages received by subscriber": 2000,
+  "4. rows committed in energy_live": 2000
+}

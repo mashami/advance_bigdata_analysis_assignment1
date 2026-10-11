@@ -1,0 +1,10 @@
+{
+  "received": 2000,
+  "redelivered_dup_flag": 0,
+  "parse_errors": 0,
+  "insert_errors": 0,
+  "inserted_committed": 2000,
+  "energy_live_rows": 2000,
+  "mode": "batched",
+  "finished_cat": "2026-10-11T08:22:18.187+02:00"
+}

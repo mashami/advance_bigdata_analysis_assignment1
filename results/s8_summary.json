@@ -1,0 +1,9 @@
+{
+  "selected_config": "R1",
+  "selected_settings": "Ridge(alpha=0.1)",
+  "test_predictions": 1680,
+  "baseline_mae_kwh": 42.70828108237502,
+  "baseline_rmse_kwh": 79.40286694883888,
+  "model_mae_kwh": 4.559204131963283,
+  "model_rmse_kwh": 5.79124848311284
+}

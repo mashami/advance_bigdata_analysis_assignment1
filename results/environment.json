@@ -1,0 +1,20 @@
+{
+  "recorded_at_cat": "2026-10-11T08:22:02.623+02:00",
+  "cpu_model": "Apple M3",
+  "cpu_cores": "8",
+  "ram_gb": 16.0,
+  "os": "macOS 14.6",
+  "storage": "SSD (Apple Fabric)",
+  "python": "3.13.7",
+  "postgresql": "17.11",
+  "timescaledb": "2.30.2",
+  "session_time_zone": "Africa/Kigali",
+  "shared_buffers": "1959MB",
+  "work_mem": "7837kB",
+  "max_parallel_workers_per_gather": "4",
+  "jit": "off",
+  "emqx": "",
+  "postgresql_runtime": "Docker container (timescale/timescaledb:latest-pg17) inside the Docker Desktop Linux VM",
+  "docker_vm_limits": "8 CPUs, 8218316800 bytes RAM",
+  "container_limits": "NanoCpus=0 Memory=0 (0 = no per-container limit)"
+}
