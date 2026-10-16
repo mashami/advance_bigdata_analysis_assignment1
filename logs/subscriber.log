@@ -4,3 +4,59 @@
 2026-10-03 09:58:39,329 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
 2026-10-11 08:22:08,729 INFO connected rc=Success session_present=False
 2026-10-11 08:22:08,731 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:16:09,705 INFO connected rc=Success session_present=False
+2026-10-16 10:16:09,708 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:45,668 INFO connected rc=Success session_present=False
+2026-10-16 10:40:45,670 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:49,371 INFO connected rc=Success session_present=True
+2026-10-16 10:40:49,376 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001496 mid=611
+2026-10-16 10:40:49,395 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001497 mid=612
+2026-10-16 10:40:49,396 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001498 mid=613
+2026-10-16 10:40:49,397 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001499 mid=614
+2026-10-16 10:40:49,398 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001500 mid=615
+2026-10-16 10:40:49,398 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001501 mid=616
+2026-10-16 10:40:49,399 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001502 mid=617
+2026-10-16 10:40:49,400 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001503 mid=618
+2026-10-16 10:40:49,401 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001504 mid=619
+2026-10-16 10:40:49,401 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001505 mid=620
+2026-10-16 10:40:49,402 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001506 mid=621
+2026-10-16 10:40:49,403 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001507 mid=622
+2026-10-16 10:40:49,403 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001508 mid=623
+2026-10-16 10:40:49,404 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001509 mid=624
+2026-10-16 10:40:49,404 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001510 mid=625
+2026-10-16 10:40:49,405 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001511 mid=626
+2026-10-16 10:40:49,406 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001512 mid=627
+2026-10-16 10:40:49,406 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001513 mid=628
+2026-10-16 10:40:49,407 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001515 mid=629
+2026-10-16 10:40:49,408 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001516 mid=630
+2026-10-16 10:40:49,408 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001517 mid=631
+2026-10-16 10:40:49,409 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001518 mid=632
+2026-10-16 10:40:49,409 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001519 mid=633
+2026-10-16 10:40:49,410 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001520 mid=634
+2026-10-16 10:40:49,411 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001521 mid=635
+2026-10-16 10:40:49,412 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001522 mid=636
+2026-10-16 10:40:49,412 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001523 mid=637
+2026-10-16 10:40:49,413 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001524 mid=638
+2026-10-16 10:40:49,414 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001525 mid=639
+2026-10-16 10:40:49,414 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001526 mid=640
+2026-10-16 10:40:49,415 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001527 mid=641
+2026-10-16 10:40:49,416 WARNING DUP flag set (broker redelivery) topic=energy/meters/1000001528 mid=642
+2026-10-16 10:40:49,416 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:50,416 INFO connected rc=Success session_present=True
+2026-10-16 10:40:50,417 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:51,423 INFO connected rc=Success session_present=True
+2026-10-16 10:40:51,424 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:52,431 INFO connected rc=Success session_present=True
+2026-10-16 10:40:52,432 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:53,439 INFO connected rc=Success session_present=True
+2026-10-16 10:40:53,446 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:54,447 INFO connected rc=Success session_present=True
+2026-10-16 10:40:54,448 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:55,456 INFO connected rc=Success session_present=True
+2026-10-16 10:40:55,457 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:56,466 INFO connected rc=Success session_present=True
+2026-10-16 10:40:56,467 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:40:57,476 INFO connected rc=Success session_present=True
+2026-10-16 10:40:57,477 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]
+2026-10-16 10:41:53,496 INFO connected rc=Success session_present=True
+2026-10-16 10:41:53,496 INFO subscribed energy/meters/# granted=[ReasonCode(Suback, 'Granted QoS 1')]

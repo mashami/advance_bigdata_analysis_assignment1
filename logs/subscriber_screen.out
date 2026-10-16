@@ -1,0 +1,12 @@
+[2026-10-16T10:41:53.497+02:00] subscriber ready on energy/meters/# (QoS 1, mode=batched); energy_live rows = 0
+  received 1,058
+  received 2,000
+[2026-10-16T10:42:05.591+02:00] subscriber finished
+  received              : 2000
+  redelivered_dup_flag  : 0
+  parse_errors          : 0
+  insert_errors         : 0
+  inserted_committed    : 2000
+  energy_live_rows      : 2000
+  mode                  : batched
+  finished_cat          : 2026-10-16T10:42:05.591+02:00

@@ -77,13 +77,13 @@ for 4,000 smart meters\par}
 101368 & Prince Murenzi\\
 101371 & Delice Sebaganwa Shami\\
 \end{tabular}\\[10pt]
-Module: BIG DATA ESSENTIALS\\[6pt]
-Instructor: KUNDAN KUMAR\\[6pt]
+Module: BIG DATA ANALYTICS\\[6pt]
+Instructor: Temitope Oguntade \\[6pt]
 Date of Submission: \submissiondate
 \end{tcolorbox}
 
 \vfill
-{\small Repository: \repourl}
+{\small Repository: \url{https://github.com/mashami/advance_bigdata_analysis_assignment1}}
 \end{titlepage}
 
 \tableofcontents
@@ -149,7 +149,18 @@ Session time zone & Africa/Kigali\\\bottomrule
 
 \shot{1_1_broker.png}{EMQX broker running (\texttt{docker ps} / EMQX dashboard).}
 \shot{1_1_database.png}{Connection to \texttt{energy\_grid}, the TimescaleDB extension and the session time zone.}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{1_1_database.png}
+    \caption{Enter Caption}
+    \label{fig:placeholder}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{screenshots/1_1_broker.png}
+    \caption{Enter Caption}
+    \label{fig:placeholder}
+\end{figure}
 \subsection{Create the database structures}
 \texttt{sql/02\_tables.sql} creates three tables:
 \begin{itemize}
@@ -174,7 +185,31 @@ energy\_readings & event\_time & TIMESTAMPTZ & CAT time & start of the 15-minute
  & voltage\_v & DOUBLE PRECISION & V & voltage\\
  & current\_a & DOUBLE PRECISION & A & current (power factor 0.95)\\
  & frequency\_hz & DOUBLE PRECISION & Hz & grid frequency\\
- & energy\_kwh & DOUBLE PRECISION & kWh & interval energy $\approx$ power\_kw $\times$ 0.25\,h\\\midrule
+\begin{figure}
+     \centering
+     \includegraphics[width=0.5\linewidth]{screenshots/1_1_broker.png}
+     \caption{Enter Caption}
+\begin{figure}
+         \centering
+         \includegraphics[width=0.5\linewidth]{screenshots/1_1_database.png}
+         \caption{Enter Caption}
+\begin{figure}
+             \centering
+             \includegraphics[width=0.5\linewidth]{screenshots/1_2_tables.png}
+             \caption{Enter Caption}
+\begin{figure}
+                 \centering
+                 \includegraphics[width=0.5\linewidth]{screenshots/1_2_meters.png}
+                 \caption{Enter Caption}
+                 \label{fig:placeholder}
+             \end{figure}
+                          \label{fig:placeholder}
+         \end{figure}
+                  \label{fig:placeholder}
+     \end{figure}
+          \label{fig:placeholder}
+ \end{figure}
+  & energy\_kwh & DOUBLE PRECISION & kWh & interval energy $\approx$ power\_kw $\times$ 0.25\,h\\\midrule
 meters & meter\_id & BIGINT (PK) & -- & meter identifier\\
  & region & TEXT & -- & Region 1--10 (400 meters each)\\
  & customer\_type & TEXT & -- & residential, commercial, industrial\\
@@ -226,6 +261,60 @@ The repeated pilot delivered 2,000 at every stage.
 \end{itemize}
 
 \shot{1_3_publisher.png}{Publisher completion with 2,000 acknowledged messages.}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{screenshots/1_3_fault_metrics.png}
+    \caption{Enter Caption}
+\begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{screenshots/1_3_fault_metrics.png}
+        \caption{Enter Caption}
+\begin{figure}
+            \centering
+            \includegraphics[width=0.5\linewidth]{screenshots/1_3_publisher.png}
+            \caption{Enter Caption}
+\begin{figure}
+                \centering
+                \includegraphics[width=0.5\linewidth]{screenshots/1_3_subscriber.png}
+                \caption{Enter Caption}
+\begin{figure}
+                    \centering
+                    \includegraphics[width=0.5\linewidth]{screenshots/1_3_database.png}
+                    \caption{Enter Caption}
+\begin{figure}
+                        \centering
+                        \includegraphics[width=0.5\linewidth]{screenshots/2_1_generation.png}
+                        \caption{Enter Caption}
+\begin{figure}
+                            \centering
+                            \includegraphics[width=0.5\linewidth]{screenshots/2_1_load.png}
+                            \caption{Enter Caption}
+\begin{figure}
+                                \centering
+                                \includegraphics[width=0.5\linewidth]{screenshots/2_1_checks.png}
+                                \caption{Enter Caption}
+\begin{figure}
+                                    \centering
+                                    \includegraphics[width=0.5\linewidth]{screenshots/2_2_quality.png}
+                                    \caption{Enter Caption}
+                                    \label{fig:placeholder}
+                                \end{figure}
+                                                                \label{fig:placeholder}
+                            \end{figure}
+                                                        \label{fig:placeholder}
+                        \end{figure}
+                                                \label{fig:placeholder}
+                    \end{figure}
+                                        \label{fig:placeholder}
+                \end{figure}
+                                \label{fig:placeholder}
+            \end{figure}
+                        \label{fig:placeholder}
+        \end{figure}
+                \label{fig:placeholder}
+    \end{figure}
+        \label{fig:placeholder}
+\end{figure}
 \shot{1_3_subscriber.png}{Subscriber received count.}
 \shot{1_3_database.png}{Stored count in \texttt{energy\_live} and sample rows.}
 \shot{1_3_fault_metrics.png}{First run: EMQX \texttt{delivery.dropped.queue\_full = 792}.}
@@ -344,7 +433,6 @@ with zero would:
 Gaps are therefore kept as gaps and reported through completeness. Any estimate must be
 explicit and labelled as such.
 
-\shot{2_3_cleaning.png}{Cleaning completion and before/after results.}
 
 % ================================================================== 3
 \section{Compare chunk intervals}
@@ -375,7 +463,7 @@ All three tables match on every check:
 0.001 tolerance.
 \end{itemize}
 
-\shot{3_1_chunks.png}{Chunk intervals, chunk counts, date ranges, indexes and data checks.}
+
 
 \subsection{Implement and time the five workloads}
 The five queries are kept in \texttt{sql/08\_workloads.sql} with the table name as
@@ -411,8 +499,8 @@ Q5 & 546.5 & 496.7 & 2221.5 & 502.8 & 423.5 & 598.2 & \textbf{458.5} & 398.0 & 1
 fastest median.}
 \end{table}
 
-\shot{3_2_timings.png}{Completed timing comparison and result-match check.}
-\shot{3_2_plan.png}{Execution plan with actual timing and buffer statistics for each configuration.}
+
+
 
 \subsection{Explain the chunk results}
 Chunks opened per query were taken from the \texttt{EXPLAIN (ANALYZE, BUFFERS)} plans:
@@ -487,8 +575,8 @@ All 29 chunk ranges ended before the cutoff, so both tables compressed the same 
 ranges. The data checks from Section~3.1 match: 10,643,735 rows, 4,000 meters, and
 equal dates and sums.
 
-\shot{4_1_config.png}{Compression settings, paused policies and compressed-chunk lists.}
-\shot{4_1_checks.png}{Data checks repeated for both compressed tables.}
+%\shot{4_1_config.png}{Compression settings, paused policies and compressed-chunk lists.}
+%\shot{4_1_checks.png}{Data checks repeated for both compressed tables.}
 
 \subsection{Measure storage and compression cost}
 Sizes come from \texttt{hypertable\_detailed\_size}, which includes every chunk,
@@ -510,7 +598,7 @@ only 96 readings per meter, so segmentation produces 4,000 small batches per chu
 instead of about 380 full 1,000-row batches. Each batch carries its own metadata and
 column headers.
 
-\shot{4_2_storage.png}{Compression timings and storage statistics.}
+%\shot{4_2_storage.png}{Compression timings and storage statistics.}
 
 \subsection{Repeat the query comparison}
 The baseline is \texttt{energy\_readings} (uncompressed, one-day chunks), timed in the
@@ -532,9 +620,9 @@ Q5 & 546.5 & 499.9 & 458.5 & \textbf{139.6} & 169.7 & +72.1 & +66.0\\\bottomrule
 
 After the measurements, the policies were resumed (\texttt{src/jobs.py resume}).
 
-\shot{4_3_results.png}{Completed timings for the compressed tables.}
-\shot{4_3_plans.png}{Actual execution plans for both compressed tables.}
-\shot{4_3_policies.png}{Compression policies resumed (\texttt{scheduled = true}).}
+%\shot{4_3_results.png}{Completed timings for the compressed tables.}
+%\shot{4_3_plans.png}{Actual execution plans for both compressed tables.}
+%\shot{4_3_policies.png}{Compression policies resumed (\texttt{scheduled = true}).}
 
 \subsection{Select a storage configuration}
 \paragraph{Effect of meter segmentation.}
@@ -627,7 +715,7 @@ capacity. Kilowatt-hours (kWh) measure energy delivered over time, which drives 
 and procurement. A short, high kW peak can be costly even when its kWh contribution is
 small.
 
-\shot{5_1_analysis.png}{Executed analysis and peak-interval results.}
+%\shot{5_1_analysis.png}{Executed analysis and peak-interval results.}
 
 \subsection{Compare regions and customer types}
 
@@ -669,7 +757,7 @@ the same ranking (61 against 29). Regional differences therefore reflect custome
 not regional behaviour. Capacity planning should follow the number of industrial
 customers, and fair regional comparisons also need normalisation by customer type.
 
-\shot{5_2_groups.png}{Group meter counts and comparison results.}
+%\shot{5_2_groups.png}{Group meter counts and comparison results.}
 
 \subsection{Assess reporting quality}
 
@@ -699,7 +787,7 @@ never recovered, so totals are permanently about 1\,\% low unless gaps are estim
 explicitly.
 \end{itemize}
 
-\shot{5_3_completeness.png}{Completeness calculation and the two daily totals.}
+%\shot{5_3_completeness.png}{Completeness calculation and the two daily totals.}
 
 \subsection{Investigate abnormal consumption}
 
@@ -749,7 +837,7 @@ customer's equipment.
 \end{itemize}
 Lowering the thresholds trades more detections for more false alarms.
 
-\shot{5_4_detection.png}{Executed detection, flagged readings and comparison with the injected events.}
+%\shot{5_4_detection.png}{Executed detection, flagged readings and comparison with the injected events.}
 
 \subsection{Management recommendation}
 \begin{tcolorbox}[colback=white, colframe=black!25, boxrule=0.5pt, arc=0pt]
@@ -828,8 +916,8 @@ offset and a 15-minute schedule. Their window is relative to the database clock,
 is now in October, so they never refresh September. That is why the manual refresh was
 required.
 
-\shot{6_1_views.png}{View definitions and sample populated rows.}
-\shot{6_1_refresh.png}{Storage and initial refresh measurements, policy settings and job status.}
+%\shot{6_1_views.png}{View definitions and sample populated rows.}
+%\shot{6_1_refresh.png}{Storage and initial refresh measurements, policy settings and job status.}
 
 \subsection{Test freshness and delayed arrivals}
 \texttt{src/s6\_2\_freshness.py} uses its own test hypertable and an hourly aggregate
@@ -877,8 +965,8 @@ refreshable only after 11:00. Until then it is visible only through real-time
 aggregation.
 \end{itemize}
 
-\shot{6_2_setup.png}{Test table and view definitions, inserts and real-time settings.}
-\shot{6_2_stages.png}{Raw and aggregate results at each stage.}
+%\shot{6_2_setup.png}{Test table and view definitions, inserts and real-time settings.}
+%\shot{6_2_stages.png}{Raw and aggregate results at each stage.}
 
 % ================================================================== 7
 \section{Build and compare dashboards}
@@ -897,7 +985,7 @@ are a whole-CAT-day date range and a selected meter. It has five panels:
 Every panel is limited to the selected range. The panel queries are kept in
 \texttt{dashboard/queries.py}.
 
-\shot{7_1_raw.png}{Running Raw dashboard with all five panels.}
+%\shot{7_1_raw.png}{Running Raw dashboard with all five panels.}
 
 \subsection{Aggregate dashboard}
 The Aggregate dashboard has the same panels, layout, filters and date range, but reads
@@ -911,7 +999,7 @@ only the continuous aggregates:
 Planned readings are calculated as registered meters (from \texttt{meters}) $\times$
 days $\times$ 96.
 
-\shot{7_2_aggregate.png}{Running Aggregate dashboard and its panel query definitions.}
+%\shot{7_2_aggregate.png}{Running Aggregate dashboard and its panel query definitions.}
 
 \subsection{Verify matching results}
 Both dashboards were set to 22 September 00:00 -- 29 September 00:00 (exclusive),
@@ -930,7 +1018,7 @@ Completeness by region & 10 & yes & 0.000000 pp & pass\\\bottomrule
 \caption{Raw against Aggregate panel data (limits: 0.001\,kWh and 0.000001 percentage points).}
 \end{table}
 
-\shot{7_3_paired.png}{Paired dashboard outputs and numerical checks for all five panels.}
+%\shot{7_3_paired.png}{Paired dashboard outputs and numerical checks for all five panels.}
 
 \subsection{Measure performance and judge the tradeoff}
 
@@ -975,7 +1063,7 @@ The price is small: 18\,MB of storage, a 15-minute refresh job, and aggregates t
 lag by up to about an hour unless real-time aggregation is enabled. All jobs were
 resumed after the measurements.
 
-\shot{7_4_timing.png}{Completed timing results and comparison.}
+%\shot{7_4_timing.png}{Completed timing results and comparison.}
 
 % ================================================================== 8
 \section{Forecast the next day}
@@ -1028,14 +1116,14 @@ The program checks that every lag source timestamp precedes its forecast origin;
 smallest gap is 1 hour, so all sources do. Scaling and one-hot encoding were fitted on
 training rows only.
 
-\shot{8_1_dataset.png}{Dataset preparation, split sizes and dates, feature examples and lag checks.}
+%\shot{8_1_dataset.png}{Dataset preparation, split sizes and dates, feature examples and lag checks.}
 
 \subsection{Evaluate the previous-day baseline}
 At 00:00 on each test day, each of the 24 hourly values for each region was predicted
 as the same hour on the previous day. This gave 1,680 predictions with
 \textbf{MAE 42.71\,kWh} and \textbf{RMSE 79.40\,kWh}.
 
-\shot{8_2_baseline.png}{Baseline run, prediction count, sample predictions and metrics.}
+%\shot{8_2_baseline.png}{Baseline run, prediction count, sample predictions and metrics.}
 
 \subsection{Train and evaluate one regression model}
 We used Ridge regression. The shared predictors are the three lags, the previous-day
@@ -1056,7 +1144,7 @@ The selected model was never refitted. It produced the same 1,680 test predictio
 the baseline, using only information available before each origin; earlier completed
 test days supply later lag values only.
 
-\shot{8_3_model.png}{Training completion, validation MAE per configuration, selected settings and sample test predictions.}
+%\shot{8_3_model.png}{Training completion, validation MAE per configuration, selected settings and sample test predictions.}
 
 \subsection{Judge forecast usefulness}
 Error is defined as predicted minus actual, in kWh.
@@ -1127,7 +1215,7 @@ because about 2\,\% of readings arrive up to three hours late (Section~5.3). The
 forecast should therefore run after about 03:00 or correct for provisional data.
 \end{itemize}
 
-\shot{8_4_metrics.png}{Metric comparison, peak-hour errors and forecast plot.}
+%\shot{8_4_metrics.png}{Metric comparison, peak-hour errors and forecast plot.}
 
 % ================================================================== 9
 \section{Reproducibility and contributions}
@@ -1147,7 +1235,7 @@ The repository (\repourl) and the submitted ZIP contain the same files:
 The 1.16\,GB CSV is not committed. \texttt{src/s2\_1\_capture\_load.py} regenerates
 and reloads it. Passwords appear only as placeholders in \texttt{.env.example}.
 
-\shot{9_2_pilot.png}{README pilot instructions run successfully: all four counts equal 2,000.}
+%\shot{9_2_pilot.png}{README pilot instructions run successfully: all four counts equal 2,000.}
 
 \subsection{Contributions}
 \begin{table}[H]\centering\small
